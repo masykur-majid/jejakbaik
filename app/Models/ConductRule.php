@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 #[Guarded('id')]
+#[Fillable('category', 'conduct_name', 'conduct_point', 'follow_up_action')]
 class ConductRule extends Model
 {
     public function pointLogDetails(): HasMany

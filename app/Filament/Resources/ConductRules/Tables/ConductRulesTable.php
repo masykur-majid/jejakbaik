@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\ConductRules\Tables;
 
+use App\Filament\Imports\ConductRuleImporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -14,6 +16,7 @@ class ConductRulesTable
     public static function configure(Table $table): Table
     {
         return $table
+
             ->columns([
                 TextColumn::make('conduct_name')
                     ->numeric()
@@ -44,6 +47,10 @@ class ConductRulesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+            ImportAction::make()
+                ->importer(ConductRuleImporter::class)
             ]);
     }
 }
