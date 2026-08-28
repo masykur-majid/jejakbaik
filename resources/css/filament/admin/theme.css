@@ -1,0 +1,78 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+.fi-body {
+   @apply bg-slate-100;
+}
+.fi-sidebar {
+    background-color: #ffffff !important;
+    border-inline-end: 1px solid #e2e8f0 !important; /* Border Slate 200 */
+}
+
+/* Mengubah warna item navigasi saat aktif (Teal) */
+.fi-sidebar-item-active {
+    background-color: #f0fdfa !important; /* Teal 50 */
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: #02675f !important; /* Teal 600 */
+}
+
+
+CSS
+/* resources/css/filament/admin/theme.css */
+
+.fi-color-primary {
+    /* Skema warna untuk komponen Filament lainnya */
+    --c-400: 45, 212, 191;
+    --c-500: 15, 118, 110; /* Teal 700 (Warna Utama Anda) */
+    --c-600: 13, 148, 136; /* Teal 600 (Warna Hover Anda) */
+}
+
+.fi-btn.fi-color-primary {
+    /* Keadaan Normal: Teal 700 */
+    background-color: #0f766e !important; 
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease-in-out;
+    border: none !important;
+}
+
+/* Memastikan ikon tetap putih */
+.fi-btn.fi-color-primary .fi-btn-icon {
+    color: #ffffff !important;
+}
+
+/* Keadaan Hover: Teal 600 (Lebih Terang/Glowing) */
+.fi-btn.fi-color-primary:hover {
+    background-color: #06877c !important; /* Teal 600 */
+    color: #ffffff !important;
+    /* box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25) !important; */
+}
+
+/* Keadaan Saat Diklik (Active): Teal 800 (Lebih Gelap) */
+.fi-btn.fi-color-primary:active {
+    background-color: #115e59 !important; /* Teal 800 */
+    transform: translateY(0);
+}
+
+/* Menebalkan dan mempercantik Badge */
+.fi-badge {
+    font-weight: 800 !important; /* Membuat teks jauh lebih tebal */
+    letter-spacing: 0.025em !important; /* Memberi sedikit jarak antar huruf agar tetap terbaca */
+    padding-inline: 0.75rem !important; /* Memperlebar badge ke samping */
+    padding-block: 0.2rem !important; /* Sedikit menebalkan badge ke atas-bawah */
+    text-transform: uppercase !important; /* Opsional: Membuat teks kapital agar lebih tegas */
+    font-size: 0.75rem !important; /* Ukuran font sedikit dikecilkan agar seimbang dengan ketebalannya */
+}
+
+/* Khusus untuk Badge warna Primary (Teal) */
+
+
+/* Membuat ikon di dalam badge ikut menebal */
+.fi-badge i, .fi-badge svg {
+    stroke-width: 2.5 !important;
+}
