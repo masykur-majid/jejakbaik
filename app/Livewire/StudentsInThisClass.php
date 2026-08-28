@@ -11,12 +11,17 @@ use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 
 class StudentsInThisClass extends TableWidget
 {
     public $record;
     
-    protected $listeners = ['refreshStudentsList'=> 'refresh'];
+   #[On('refreshStudentsList')]
+    public function refreshStudentsList(): void
+    {
+
+    }
 
     public static function canView(): bool
     {
