@@ -26,6 +26,9 @@ class PointLogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::ListDetailsFilled;
 
+    protected static ?string $navigationLabel = 'Riwayat Input Poin';
+    protected static ?string $pluralLabel = 'Riwayat Input Poin';
+
     public static function infolist(Schema $schema): Schema
     {
         return PointLogInfolist::configure($schema);

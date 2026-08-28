@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\StudentPoints\Tables;
 
+use App\Filament\Imports\StudentImporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
@@ -44,5 +46,6 @@ class StudentPointsTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 }

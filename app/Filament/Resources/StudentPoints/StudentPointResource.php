@@ -27,11 +27,12 @@ class StudentPointResource extends Resource
 
     
     
-    protected static ?string $navigationLabel = 'Student Point';
+    protected static ?string $navigationLabel = 'Lihat Poin Siswa';
  
-    protected static ?string $pluralLabel = 'Student Points';
+    protected static ?string $pluralLabel = 'Daftar Poin Siswa';
  
     protected static ?string $modelLabel = 'Student Point';
+    
     public static function form(Schema $schema): Schema
     {
         return StudentPointForm::configure($schema);

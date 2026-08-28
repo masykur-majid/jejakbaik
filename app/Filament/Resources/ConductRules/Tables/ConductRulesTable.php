@@ -49,8 +49,8 @@ class ConductRulesTable
                 ]),
             ])
             ->headerActions([
-            ImportAction::make()
-                ->importer(ConductRuleImporter::class)
+                ImportAction::make()
+                    ->importer(ConductRuleImporter::class)
             ]);
     }
 }
