@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Filament\Resources\PointLogs\Pages;
+
+use App\Filament\Resources\PointLogs\PointLogResource;
+use App\Filament\Resources\PointLogs\Schemas\PointLogForm;
+use App\Models\ConductRule;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Schema;
+
+class EditByConduct extends EditRecord
+{
+    protected static string $resource = PointLogResource::class;
+
+    protected static ?string $title = 'Create Log — By Conduct';
+
+    public function form(Schema $schema): Schema
+    {
+        return PointLogForm::configureByStudent($schema);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['subject_type'] = ConductRule::class;
+        return $data;
+    }
+
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         ViewAction::make(),
+    //         DeleteAction::make(),
+    //     ];
+    // }
+}

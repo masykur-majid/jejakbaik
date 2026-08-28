@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\ConductRules\ConductRuleResource;
+use App\Filament\Resources\PointLogs\PointLogResource;
+use App\Filament\Resources\StudentPoints\StudentPointResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,9 +33,11 @@ class ParapointPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(
-                in: app_path('Filament/Parapoint/Resources'), 
-                for: 'App\Filament\Parapoint\Resources')
+            ->resources([
+                ConductRuleResource::class,
+                PointLogResource::class,
+                StudentPointResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Parapoint/Pages'), for: 'App\Filament\Parapoint\Pages')
             ->pages([
                 Dashboard::class,

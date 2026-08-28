@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\Books\BookResource;
+use App\Filament\Resources\ReadingProgress\ReadingProgressResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,7 +32,10 @@ class ReadingPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Pink,
             ])
-            ->discoverResources(in: app_path('Filament/Reading/Resources'), for: 'App\Filament\Reading\Resources')
+            ->resources([
+                BookResource::class,
+                ReadingProgressResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Reading/Pages'), for: 'App\Filament\Reading\Pages')
             ->pages([
                 Dashboard::class,
