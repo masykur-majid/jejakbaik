@@ -6,6 +6,7 @@ use App\Models\ClassGroup;
 use App\Models\ConductRule;
 use App\Models\PointRule;
 use App\Models\Student;
+use App\Models\Teacher;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -20,6 +21,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Builder;
 
 class PointLogForm
 {
@@ -33,16 +35,36 @@ class PointLogForm
                         Hidden::make('subject_type')
                             ->default('student')
                             ->dehydrated(),
+
                         Select::make('subject_id')
                             ->label('Student')
-                            ->options(Student::pluck('student_name', 'id'))
+                            ->options( function (){
+                                if(auth()->user()->hasRole('super_admin')){
+                                    return Student::pluck('student_name', 'id');
+                                }
+
+                                $teacher = Teacher::where('user_id', auth()->id())->with('classgroups')->first();
+
+                                if($teacher && $teacher->classgroups){
+                                    $classGroupIds = $teacher->classgroups->pluck('id')->toArray();
+                                    return Student::where('class_group_id', $classGroupIds)
+                                                        ->pluck('student_name', 'id');
+                                }
+                                return [];                                
+                            })
                             ->preload()
                             ->searchable()
                             ->required(),
 
                         Select::make('teacher_id')
                             ->label('Teacher Who Recorded')
-                            ->relationship('teacher', 'teacher_name')
+                            ->relationship('teacher', 'teacher_name', function (Builder $query){
+                                if(!auth()->user()->hasRole('super_admin')){
+                                    return $query->where('user_id', auth()->id());
+                                }
+                                return $query;
+                            })
+                            ->default(!auth()->user()->hasRole('admin') ? Teacher::where('user_id', auth()->id())->value('id') : null)
                             ->preload()
                             ->searchable()
                             ->required(),
@@ -54,6 +76,8 @@ class PointLogForm
                         ->relationship('pointLogDetails')
                         ->addActionLabel('Tambah Catatan Poin')
                         ->schema([
+                            DatePicker::make('occurrence_date')
+                                ->required(),
                             Select::make('conduct_rule_id')
                                 ->relationship('conductRule', 'conduct_name')
                                 ->preload()
@@ -100,11 +124,6 @@ class PointLogForm
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
-                            DatePicker::make('occurrence_date')
-                                ->required(),
-                            FileUpload::make('photo')
-                                ->required()
-                                ->columnSpan(2),
                             ])
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record){
                             $data['student_id'] = $record->subject_id;
@@ -126,12 +145,12 @@ class PointLogForm
                         Hidden::make('subject_type')
                             ->default('conduct')
                             ->dehydrated(),
-                        TextInput::make('Date')
+                        Hidden::make('Date')
                             ->dehydrated(false)
-                            ->readOnly()
                             ->default(now()->format('d M Y')),
                         Select::make('teacher_id')
                             ->label('Teacher Who Recorded')
+                            ->columnSpan(2)
                             ->relationship('teacher', 'teacher_name')
                             ->preload()
                             ->searchable()
@@ -142,18 +161,18 @@ class PointLogForm
                             ->preload()
                             ->searchable()
                             ->required()
-                            ->columnSpanFull()
+                            ->columnSpan(3)
                             ->live()
                             ->afterStateUpdated(function (string $state, Set $set, Get $get){
                                     $repeaterItems = $get('pointLogDetails') ?? [];
                                     if($state){
                                         $PointRule = ConductRule::find($state);
                                         $set('conduct_point', $PointRule ? $PointRule->conduct_point : 0);
-                                        $set('counted_point', $PointRule->conduct_point);
-
+                                       
                                         foreach ($repeaterItems as $uuid => $item) {
                                             // Tembak field 'occurrence_number' di dalam repeater berdasarkan UUID-nya
-                                            $set("pointLogDetails.{$uuid}.counted_point", $PointRule->conduct_point);
+                                            $occurrence = $get("pointLogDetails.{$uuid}.occurrence_number");
+                                            $set("pointLogDetails.{$uuid}.counted_point", $PointRule->conduct_point*$occurrence);
                                         }
                                     }
                                     
@@ -165,7 +184,7 @@ class PointLogForm
                             ->readOnly()
                             ->dehydrated(),
                     ])
-                    ->columns(2),
+                    ->columns(6),
                     
                     Repeater::make('pointLogDetails')
                         ->relationship('pointLogDetails')
@@ -226,9 +245,6 @@ class PointLogForm
                             Textarea::make('action_notes')
                                 ->required()
                                 ->rows(2)
-                                ->columnSpanFull(),
-                            FileUpload::make('photo')
-                                ->required()
                                 ->columnSpanFull(),
                         ])
                         ->columns(3)

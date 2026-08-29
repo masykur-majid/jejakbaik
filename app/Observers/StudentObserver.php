@@ -20,7 +20,7 @@ class StudentObserver
                 'password' => bcrypt('password123'), 
             ]);
 
-            $user->assignRole('siswa');
+            $user->assignRole('student');
 
             $student->user_id = $user->id;
             $student->saveQuietly();

@@ -20,7 +20,7 @@ class TeacherObserver
                 'password' => bcrypt('password123'), 
             ]);
 
-            $user->assignRole('guru');
+            $user->assignRole('teacher');
             $teacher->user_id = $user->id;
             $teacher->saveQuietly();
 

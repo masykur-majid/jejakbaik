@@ -11,17 +11,28 @@ class PointLogInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('subject_type'),
-                TextEntry::make('subject_id')
-                    ->numeric(),
-                TextEntry::make('teacher.id')
-                    ->label('Teacher'),
+                TextEntry::make('subject_type')
+                    ->label('Input Berdasarkan:')
+                    ->formatStateUsing(fn (string $state): string => class_basename($state)=='Student' ? 'Siswa' : 'Perilaku')
+                    ->badge(),
+                TextEntry::make('teacher.teacher_name')
+                    ->label('Dibuat Oleh:'),
                 TextEntry::make('created_at')
+                    ->label('Dibuat pada:')
                     ->dateTime()
                     ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-            ]);
+                TextEntry::make('subject_name')
+                    ->label(fn ($record) => match (class_basename($record->subject_type)) {
+                        'Student' => 'Nama Siswa',
+                        'ConductRule' => 'Aturan Perilaku',
+                        default => 'siubject',
+                    })
+                    ->badge()
+                    ->numeric(),
+                // TextEntry::make('updated_at')
+                //     ->dateTime()
+                //     ->placeholder('-'),
+            ])
+            ->columns(3);
     }
 }

@@ -40,9 +40,9 @@ class PointLog extends Model
 
     public function getSubjectNameAttribute(): string
     {
-        return match($this->subject_type){
-            'student' => $this->subject?->student_name ?? '-',
-            'conduct' => $this->subject?->conduct_name ?? '-',
+        return match(class_basename($this->subject_type)){
+            'Student' => $this->subject?->student_name ?? '-',
+            'ConductRule' => $this->subject?->conduct_name ?? '-',
             default => '-'
         };
     }

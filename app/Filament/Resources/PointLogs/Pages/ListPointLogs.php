@@ -17,17 +17,7 @@ class ListPointLogs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-        Action::make('create_by_student')
-            ->label('By Student')
-            ->icon('tabler-user')
-            ->color(Color::Indigo)
-            ->url(PointLogResource::getUrl('create-by-student')),
-
-        Action::make('create_by_conduct')
-            ->label('By Conduct')
-            ->icon('tabler-file-description')
-            ->color(Color::Purple)
-            ->url(PointLogResource::getUrl('create-by-conduct')),
+        //
         ];
     }
 

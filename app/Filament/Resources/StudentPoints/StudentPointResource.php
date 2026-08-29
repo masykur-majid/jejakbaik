@@ -14,6 +14,8 @@ use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Override;
 use UnitEnum;
 
 class StudentPointResource extends Resource
@@ -53,6 +55,19 @@ class StudentPointResource extends Resource
         return [
             PointLogDetailsRelationManager::class,
         ];
+    }
+    
+
+    #[Override]
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if(auth()->user()->hasRole('teacher')){
+            $query->whereHas('classGroup.teacher', function (Builder $query) {
+                                $query->where('user_id', auth()->id());
+                        });
+        }
+        return $query;
     }
 
     public static function getPages(): array

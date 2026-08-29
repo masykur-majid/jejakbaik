@@ -29,6 +29,7 @@ class ParapointPanelProvider extends PanelProvider
         return $panel
             ->id('parapoint')
             ->path('parapoint')
+            ->maxContentWidth('full')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

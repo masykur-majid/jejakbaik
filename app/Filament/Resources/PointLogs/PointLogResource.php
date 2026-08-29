@@ -8,6 +8,7 @@ use App\Filament\Resources\PointLogs\Pages\CreatePointLog;
 use App\Filament\Resources\PointLogs\Pages\EditPointLog;
 use App\Filament\Resources\PointLogs\Pages\ListPointLogs;
 use App\Filament\Resources\PointLogs\Pages\ViewPointLog;
+use App\Filament\Resources\PointLogs\RelationManagers\PointLogDetailsRelationManager;
 use App\Filament\Resources\PointLogs\Schemas\PointLogForm;
 use App\Filament\Resources\PointLogs\Schemas\PointLogInfolist;
 use App\Filament\Resources\PointLogs\Tables\PointLogsTable;
@@ -26,8 +27,9 @@ class PointLogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::ListDetailsFilled;
 
-    protected static ?string $navigationLabel = 'Riwayat Input Poin';
-    protected static ?string $pluralLabel = 'Riwayat Input Poin';
+    protected static ?string $navigationLabel = 'Input Poin';
+
+    protected static ?string $pluralLabel = 'Input Poin';
 
     public static function infolist(Schema $schema): Schema
     {
@@ -42,7 +44,7 @@ class PointLogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PointLogDetailsRelationManager::class,
         ];
     }
 
@@ -53,8 +55,10 @@ class PointLogResource extends Resource
             'create-by-student' => CreateByStudent::route('/create/by-student'),
             'create-by-conduct' => CreateByConduct::route('/create/by-conduct'),
             'view' => ViewPointLog::route('/{record}'),
-            'edit-by-student' => CreateByStudent::route('/{record}/edit/by-student'),
-            'edit-by-conduct' => CreateByConduct::route('/{record}/edit/by-conduct'),
+            // 'edit-by-student' => CreateByStudent::route('/{record}/edit/by-student'),
+            // 'edit-by-conduct' => CreateByConduct::route('/{record}/edit/by-conduct'),
         ];
     }
+
+    
 }

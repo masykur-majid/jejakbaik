@@ -18,7 +18,7 @@ class EditByConduct extends EditRecord
 
     public function form(Schema $schema): Schema
     {
-        return PointLogForm::configureByStudent($schema);
+        // return PointLogForm::configureByStudent($schema);
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array

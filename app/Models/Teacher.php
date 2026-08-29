@@ -21,7 +21,7 @@ class Teacher extends Model
         return $this->hasMany(Student::class, 'teacher_id', 'id');
     }
     public function classgroups(): hasMany{
-        return $this->hasMany(Classgroup::class, 'form_teacher', 'id');
+        return $this->hasMany(ClassGroup::class, 'form_teacher', 'id');
     }
 
 

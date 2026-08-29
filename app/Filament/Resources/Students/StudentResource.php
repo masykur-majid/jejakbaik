@@ -12,6 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Override;
 use UnitEnum;
 
 class StudentResource extends Resource
@@ -21,6 +23,7 @@ class StudentResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;  
 
     protected static ?string $navigationLabel = 'Students';
+
     protected static string| UnitEnum |null $navigationGroup = 'Akademik';
 
     public static function getNavigationBadge(): ?string
@@ -40,6 +43,7 @@ class StudentResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // dd(auth()->id());
         return StudentsTable::configure($table);
     }
 
@@ -48,6 +52,18 @@ class StudentResource extends Resource
         return [
             //
         ];
+    }
+
+    #[Override]
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if(auth()->user()->hasRole('teacher')){
+            $query->whereHas('classGroup.teacher', function (Builder $query) {
+                                $query->where('user_id', auth()->id());
+                        });
+        }
+        return $query;
     }
 
     public static function getPages(): array

@@ -28,6 +28,7 @@ class ReadingPanelProvider extends PanelProvider
         return $panel
             ->id('reading')
             ->path('reading')
+            ->maxContentWidth('full')
             ->login()
             ->colors([
                 'primary' => Color::Pink,
