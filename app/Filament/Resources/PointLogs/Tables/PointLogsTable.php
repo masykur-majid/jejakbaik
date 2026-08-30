@@ -8,6 +8,7 @@ use App\Models\Student;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -76,6 +77,7 @@ class PointLogsTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                DeleteAction::make(),
                 // EditAction::make(),
             ])
             ->toolbarActions([
@@ -83,16 +85,22 @@ class PointLogsTable
                     DeleteBulkAction::make(),
                 ]),
                 Action::make('create_by_student')
-            ->label('Input Berdasarkan Siswa')
-            ->icon('tabler-user')
-            ->color(Color::Indigo)
-            ->url(PointLogResource::getUrl('create-by-student')),
+                    ->label('Input Berdasarkan Siswa')
+                    ->icon('tabler-user')
+                    ->color(Color::Indigo)
+                    ->url(PointLogResource::getUrl('create-by-student')),
 
-        Action::make('create_by_conduct')
-            ->label('Input Berdasarkan Pelanggaran')
-            ->icon('tabler-file-description')
-            ->color(Color::Purple)
-            ->url(PointLogResource::getUrl('create-by-conduct')),
+                Action::make('create_by_conduct')
+                    ->label('Input Berdasarkan Pelanggaran')
+                    ->icon('tabler-file-description')
+                    ->color(Color::Purple)
+                    ->url(PointLogResource::getUrl('create-by-conduct')),
+                
+                Action::make('mas_input')
+                    ->label('Input Poin Untuk Satu Kelas')
+                    ->icon('tabler-file-description')
+                    ->color(Color::Purple)
+                    ->url(PointLogResource::getUrl('mass-input')),
             ]);
     }
 }

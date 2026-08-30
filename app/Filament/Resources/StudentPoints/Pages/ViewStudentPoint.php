@@ -10,12 +10,18 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Attributes\On;
 
 class ViewStudentPoint extends ViewRecord implements HasTable
 {
     use InteractsWithTable;
 
     protected static string $resource = StudentPointResource::class;
+
+    #[On('refreshStudentPoint')]
+    public function refreshStudentPoint(): void{
+
+    }
 
     public function getTitle(): string
     {

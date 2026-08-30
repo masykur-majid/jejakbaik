@@ -37,7 +37,7 @@ class PointLogForm
                             ->dehydrated(),
 
                         Select::make('subject_id')
-                            ->label('Student')
+                            ->label('Nama Siswa')
                             ->options( function (){
                                 if(auth()->user()->hasRole('super_admin')){
                                     return Student::pluck('student_name', 'id');
@@ -57,7 +57,7 @@ class PointLogForm
                             ->required(),
 
                         Select::make('teacher_id')
-                            ->label('Teacher Who Recorded')
+                            ->label('Nama Guru Pencatat')
                             ->relationship('teacher', 'teacher_name', function (Builder $query){
                                 if(!auth()->user()->hasRole('super_admin')){
                                     return $query->where('user_id', auth()->id());
@@ -76,10 +76,9 @@ class PointLogForm
                         ->relationship('pointLogDetails')
                         ->addActionLabel('Tambah Catatan Poin')
                         ->schema([
-                            DatePicker::make('occurrence_date')
-                                ->required(),
                             Select::make('conduct_rule_id')
                                 ->relationship('conductRule', 'conduct_name')
+                                ->label('Aturan Poin Yang Dikerjakan')
                                 ->preload()
                                 ->searchable()
                                 ->required()
@@ -94,12 +93,17 @@ class PointLogForm
                                     }
                                 })
                                 ->columnSpanFull(),
+                            DatePicker::make('occurrence_date')
+                                ->label('Tanggal Kejadian')
+                                ->required(),
                             TextInput::make('conduct_point')
+                                ->label('Poin')
                                 ->required()
                                 ->numeric()
-                                ->readOnly()
+                                ->disabled()
                                 ->dehydrated(),
                             TextInput::make('occurrence_number')
+                                ->label('Banyak Kejadian')
                                 ->required()
                                 ->numeric()
                                 ->default(1)
@@ -116,11 +120,13 @@ class PointLogForm
                                     }
                                 }),
                             TextInput::make('counted_point')
+                                ->label('Total Poin')
                                 ->required()
                                 ->numeric()
-                                ->readOnly()
+                                ->disabled()
                                 ->dehydrated(),
                             Textarea::make('action_notes')
+                                ->label('Keterangan')
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
@@ -129,8 +135,8 @@ class PointLogForm
                             $data['student_id'] = $record->subject_id;
                             return $data;
                         })
-                        ->columns(3)
-                        ->grid(2)
+                        ->columns(2)
+                        ->grid(3)
                 ])
                 ->columns(1);             
     }
@@ -149,14 +155,14 @@ class PointLogForm
                             ->dehydrated(false)
                             ->default(now()->format('d M Y')),
                         Select::make('teacher_id')
-                            ->label('Teacher Who Recorded')
+                            ->label('Guru Pencatat')
                             ->columnSpan(2)
                             ->relationship('teacher', 'teacher_name')
                             ->preload()
                             ->searchable()
                             ->required(),
                         Select::make('subject_id')
-                            ->label('Conduct')
+                            ->label('Aturan Poin yang Dikerjakan')
                             ->options(ConductRule::pluck('conduct_name', 'id'))
                             ->preload()
                             ->searchable()
@@ -181,7 +187,8 @@ class PointLogForm
                                     }
                                 }),
                         TextInput::make('conduct_point')
-                            ->readOnly()
+                            ->label('Poin')
+                            ->disabled()
                             ->dehydrated(),
                     ])
                     ->columns(6),
@@ -190,15 +197,24 @@ class PointLogForm
                         ->relationship('pointLogDetails')
                         
                         ->schema([
+                            DatePicker::make('occurrence_date')
+                                ->label('Tanggal Kejadian')
+                                ->required(),
                             Select::make('class_group_id')
-                                ->placeholder('select class')  
+                                ->label('Kelas')
+                                ->placeholder('Pilih Kelas')  
                                 ->options(function(){
+                                    if(!auth()->user()->hasRole('super_admin')){
+                                        $teacherId = Teacher::where('user_id', auth()->id())->value('id');    
+                                        return ClassGroup::query()->where('form_teacher', $teacherId)->pluck('class_name', 'id');
+                                    }
                                     return ClassGroup::query()->pluck('class_name', 'id');
                                 })    
                                 ->live()
                                 ->dehydrated(false)
                                 ->columnSpan(1),
                             Select::make('student_id')
+                                ->label('Nama Siswa')
                                 ->placeholder('select students')
                                 ->options(function(Get $get){
                                     $selectedClass = $get('class_group_id');
@@ -212,9 +228,8 @@ class PointLogForm
                                 ->preload()
                                 ->searchable()
                                 ->columnSpan(2),
-                            DatePicker::make('occurrence_date')
-                                ->required(),
                             TextInput::make('occurrence_number')
+                                ->label('Jumlah Kejadian')
                                 ->required()
                                 ->numeric()
                                 ->live()
@@ -231,6 +246,7 @@ class PointLogForm
                                     }
                                 }),
                             TextInput::make('counted_point')
+                                ->label('Total Poin')
                                 ->required()
                                 ->numeric()
                                 ->readOnly()
@@ -243,12 +259,13 @@ class PointLogForm
                                 })
                                 ->dehydrated(),
                             Textarea::make('action_notes')
+                                ->label('Keterangan')
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
                         ])
-                        ->columns(3)
-                        ->grid(2)
+                        ->columns(2)
+                        ->grid(3)
                         ->cloneable()
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record, $component){
                             $data['conduct_rule_id'] = $record->subject_id;

@@ -10,86 +10,38 @@
         body { font-family: 'Poppins', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-slate-50 flex flex-col h-screen items-center justify-center">
+    <div class="pb-3">
+        <div class="text-6xl font-bold text-amber-500">Jejak<span class="text-slate-800">Baik</span></div>
+        <div class="items-end justify-center text-right text-xs">by <span class="text-amber-500 font-bold">ParahyanganSchool</span></div>
+    </div>
+    <div class>
 
-    <nav class="flex items-center justify-between px-8 py-6 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div class="text-2xl font-bold text-teal-600">Jejak<span class="text-slate-800">Baik</span></div>
-        <div class="space-x-6 hidden md:block text-slate-600 font-medium">
-            <a href="#fitur" class="hover:text-teal-600 transition">Fitur</a>
-            <a href="#cara-kerja" class="hover:text-teal-600 transition">Cara Kerja</a>
-            <a href="/panel/login" class="px-6 py-2 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-600 hover:text-white transition">Masuk</a>
-        </div>
-    </nav>
+        
 
-    <header class="relative px-8 py-20 lg:py-32 flex flex-col items-center text-center">
-        <div class="max-w-4xl">
-            <span class="bg-teal-100 text-teal-700 px-4 py-1 rounded-full text-sm font-semibold mb-6 inline-block">
-                Aplikasi Jurnal Membaca Siswa
-            </span>
-            <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6">
-                Abadikan Setiap Halaman yang Kamu <span class="text-teal-600 underline decoration-wavy">Jelajahi</span>.
-            </h1>
-            <p class="text-lg text-slate-600 mb-10 max-w-2xl mx-auto">
-                JejakBaik membantu siswa mencatat progres membaca, mendapatkan feedback guru, dan membangun kebiasaan literasi yang bermakna setiap hari.
-            </p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="/admin/register" class="px-8 py-4 bg-teal-600 text-white rounded-xl font-bold shadow-lg shadow-teal-200 hover:bg-teal-700 hover:-translate-y-1 transition duration-300">
-                    Mulai Mencatat Sekarang
-                </a>
-                <a href="#fitur" class="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-50 transition">
-                    Lihat Fitur
-                </a>
+
+        <div class="flex space-x-2">
+            <div class="bg-neutral-primary-soft block max-w-sm border border-default shadow-xl rounded-md">
+                <img class="" src="{{ asset('storage/card.png')  }}" alt="" />
+
+                <div class="p-6 text-center">
+                    <span class="inline-flex items-center bg-slate-200 border rounded-md text-slate-500 px-3">
+                        <svg class="w-3 h-3 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.122 17.645a7.185 7.185 0 0 1-2.656 2.495 7.06 7.06 0 0 1-3.52.853 6.617 6.617 0 0 1-3.306-.718 6.73 6.73 0 0 1-2.54-2.266c-2.672-4.57.287-8.846.887-9.668A4.448 4.448 0 0 0 8.07 6.31 4.49 4.49 0 0 0 7.997 4c1.284.965 6.43 3.258 5.525 10.631 1.496-1.136 2.7-3.046 2.846-6.216 1.43 1.061 3.985 5.462 1.754 9.23Z"/></svg>
+                        ParaPoint
+                    </span>
+                    <a href="#">
+                        <h5 class="mt-3 mb-6 text-md font-semibold tracking-tight text-heading">Catat Point Penghargaan dan Pelanggaran Siswa</h5>
+                    </a>
+                    <a href="/parapoint" class="inline-flex items-center bg-amber-500 text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-md text-sm px-4 py-2.5 focus:outline-none">
+                        Log In
+                        <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
-    </header>
 
-    <section class="px-8 py-12">
-        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 bg-white p-10 rounded-3xl shadow-xl shadow-slate-200/50">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-slate-900">1,200+</div>
-                <div class="text-slate-500 text-sm">Buku Terdaftar</div>
-            </div>
-            <div class="text-center border-l border-slate-100">
-                <div class="text-3xl font-bold text-slate-900">5,000+</div>
-                <div class="text-slate-500 text-sm">Log Membaca</div>
-            </div>
-            <div class="text-center border-l border-slate-100">
-                <div class="text-3xl font-bold text-slate-900">850+</div>
-                <div class="text-slate-500 text-sm">Siswa Aktif</div>
-            </div>
-            <div class="text-center border-l border-slate-100">
-                <div class="text-3xl font-bold text-teal-600">100%</div>
-                <div class="text-slate-500 text-sm">Terverifikasi</div>
-            </div>
-        </div>
-    </section>
+    </div>
 
-    <section id="fitur" class="px-8 py-20 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-16">Mengapa Pakai JejakBaik?</h2>
-        <div class="grid md:grid-cols-3 gap-10">
-            <div class="p-8 bg-teal-50 rounded-3xl border border-teal-100">
-                <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-teal-200 text-xl">📝</div>
-                <h3 class="text-xl font-bold mb-3">Pencatatan Mudah</h3>
-                <p class="text-slate-600 leading-relaxed">Catat halaman awal, akhir, dan rangkuman hanya dalam hitungan detik setelah membaca.</p>
-            </div>
-            <div class="p-8 bg-amber-50 rounded-3xl border border-amber-100">
-                <div class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-amber-200 text-xl">🎯</div>
-                <h3 class="text-xl font-bold mb-3">Pantau Progres</h3>
-                <p class="text-slate-600 leading-relaxed">Lihat seberapa jauh kamu melangkah dengan persentase progres yang otomatis terhitung.</p>
-            </div>
-            <div class="p-8 bg-indigo-50 rounded-3xl border border-indigo-100">
-                <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200 text-xl">💬</div>
-                <h3 class="text-xl font-bold mb-3">Feedback Guru</h3>
-                <p class="text-slate-600 leading-relaxed">Dapatkan catatan dan verifikasi langsung dari gurumu untuk setiap bacaanmu.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="px-8 py-12 border-t border-slate-200 text-center">
-        <p class="text-slate-400 text-sm">
-            &copy; 2026 JejakBaik - Platform Literasi Digital. Dibuat dengan ❤️ untuk Pendidikan Indonesia.
-        </p>
-    </footer>
-
+    
 </body>
 </html>

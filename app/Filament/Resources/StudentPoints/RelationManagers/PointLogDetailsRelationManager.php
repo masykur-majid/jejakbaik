@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\StudentPoints\RelationManagers;
 
+use App\Filament\Resources\StudentPoints\Pages\ViewStudentPoint;
+use App\Models\ConductRule;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -18,41 +20,92 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Override;
 
 class PointLogDetailsRelationManager extends RelationManager
 {
     protected static string $relationship = 'pointLogDetails';
 
+    #[Override]
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Select::make('point_log_id')
-                    ->relationship('pointLog', 'id')
+                Select::make('student_id')
+                    ->relationship('student', 'student_name')
+                    ->label('Nama Siswa')
+                    ->dehydrated()
+                    ->disabled()
+                    ->columnSpan(2)
                     ->required(),
                 DatePicker::make('occurrence_date')
+                    ->label('Tanggal Kejadian')
                     ->required(),
                 Select::make('conduct_rule_id')
-                    ->relationship('conductRule', 'id')
-                    ->required(),
-                TextInput::make('conduct_point')
+                    ->relationship('conductRule', 'conduct_name')
+                    ->label('Aturan Poin')
+                    ->preload()
+                    ->searchable()
                     ->required()
-                    ->numeric(),
-                TextInput::make('occurrence_number')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('counted_point')
-                    ->required()
-                    ->numeric(),
-                Textarea::make('action_notes')
-                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function (string $state, Set $set, Get $get){
+                        if($state){
+                            $PointRule = ConductRule::find($state);
+                            $occurrence = $get('occurrence_number');
+                            $set('conduct_point', $PointRule ? $PointRule->conduct_point : 0);
+                            $set('counted_point', $PointRule ? $PointRule->conduct_point*$occurrence : 0);
+                        }else{
+                            $set('conduct_point', 0);
+                        }
+                    })
                     ->columnSpanFull(),
-                TextInput::make('photo')
-                    ->required(),
-            ]);
+                TextInput::make('conduct_point')
+                    ->label('poin')
+                    ->required()
+                    ->numeric()
+                    ->readOnly()
+                    ->dehydrated(),
+                TextInput::make('occurrence_number')
+                    ->label('Jumlah Kejadian')
+                    ->required()
+                    ->numeric()
+                    ->default(1)
+                    ->live()
+                    ->afterStateUpdated(function ($state, Get $get, Set $set){
+                        $occurrenceNumber = $state;
+                        $actionValue = $get('conduct_point');
+                        
+                        if($actionValue && $occurrenceNumber){
+                            $set('counted_point', $occurrenceNumber*$actionValue);
+                        }
+                        else{
+                            $set('counted_point', 0);
+                        }
+                    }),
+                TextInput::make('counted_point')
+                    ->label('Total Poin')
+                    ->required()
+                    ->numeric()
+                    ->readOnly()
+                    ->dehydrated(),
+                Textarea::make('action_notes')
+                    ->label('Keterangan')
+                    ->required()
+                    ->rows(2)
+                    ->columnSpanFull(),
+            ])
+            ->columns(3);
     }
 
     public function infolist(Schema $schema): Schema
@@ -89,26 +142,50 @@ class PointLogDetailsRelationManager extends RelationManager
             ->recordTitleAttribute('conduct_name')
             ->columns([
                 TextColumn::make('occurrence_date')
+                    ->label('Tanggal')
                     ->date()
                     ->sortable(),
+                TextColumn::make('conductRule.category')
+                    ->label('Kategori')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state){
+                        'Achievement' => 'Pengghargaan',
+                        'Violation' => "Pelanggaran",
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state){
+                        'Achievement' => 'success',
+                        'Violation' => 'danger',
+                        default => 'gray',
+                    })
+                    ->searchable()
+                    ->alignJustify(),
                 TextColumn::make('conductRule.conduct_name')
+                    ->label('Aturan Poin')
                     ->searchable()
                     ->grow(true)
-                    ->width('70%')
                     ->wrap()
                     ->alignJustify(),
                 TextColumn::make('conduct_point')
-                    ->numeric()
-                    ->extraHeaderAttributes(['class' => 'whitespace-normal']),
-                TextColumn::make('occurrence_number')
+                    ->label('Poin')
+                    ->formatStateUsing(function ($record){
+                        $point = $record->conduct_point ?? 0;
+                        $occur = $record->occurrence_number ?? 0;
+                        return "{$point} x {$occur} = ";
+                    })
                     ->extraHeaderAttributes(['class' => 'whitespace-normal']),
                 TextColumn::make('counted_point')
+                    ->label('Total')
+                    ->badge()
                     ->numeric()
                     ->width('60px')
                     ->wrap()
                     ->sortable()
                     ->extraHeaderAttributes(['class' => 'whitespace-normal']),
                 TextColumn::make('pointLog.teacher.teacher_name')
+                    ->label('Guru Pencatat')
+                    ->badge()
+                    ->color(Color::Taupe)
                     ->numeric()
                     ->width('60px')
                     ->wrap()
@@ -119,18 +196,22 @@ class PointLogDetailsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                // CreateAction::make(),
+                // AssociateAction::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DissociateAction::make(),
+                // ViewAction::make(),
+                EditAction::make()
+                    ->label('Lihat / Edit')
+                    ->after(function(){
+                        $this->dispatch('refreshStudentPoint');
+                    }),
+                // DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
+                    // DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

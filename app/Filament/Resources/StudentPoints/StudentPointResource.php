@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use Override;
 use UnitEnum;
 
@@ -92,5 +93,9 @@ class StudentPointResource extends Resource
     public static function getRecordRouteKeyName(): string
     {
         return 'id';
+    }
+    #[On('refreshStudentPoint')]
+    public function refreshStudentPoint(): void{
+        
     }
 }

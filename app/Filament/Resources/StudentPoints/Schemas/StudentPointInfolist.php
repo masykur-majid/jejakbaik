@@ -6,9 +6,11 @@ use App\Models\PointLogDetail;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Livewire\Attributes\On;
 
 class StudentPointInfolist
 {
+
     public static function configure(Schema $schema): Schema
     {
         return $schema

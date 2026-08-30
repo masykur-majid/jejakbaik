@@ -6,12 +6,14 @@ use App\Filament\Resources\PointLogs\Pages\CreateByConduct;
 use App\Filament\Resources\PointLogs\Pages\CreateByStudent;
 use App\Filament\Resources\PointLogs\Pages\CreatePointLog;
 use App\Filament\Resources\PointLogs\Pages\EditPointLog;
+use App\Filament\Resources\PointLogs\Pages\InputForWholeClass;
 use App\Filament\Resources\PointLogs\Pages\ListPointLogs;
 use App\Filament\Resources\PointLogs\Pages\ViewPointLog;
 use App\Filament\Resources\PointLogs\RelationManagers\PointLogDetailsRelationManager;
 use App\Filament\Resources\PointLogs\Schemas\PointLogForm;
 use App\Filament\Resources\PointLogs\Schemas\PointLogInfolist;
 use App\Filament\Resources\PointLogs\Tables\PointLogsTable;
+use App\Filament\Resources\StudentPoints\RelationManagers\PointLogDetailsRelationManager as RelationManagersPointLogDetailsRelationManager;
 use App\Models\PointLog;
 use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
@@ -44,7 +46,7 @@ class PointLogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            PointLogDetailsRelationManager::class,
+            RelationManagersPointLogDetailsRelationManager::class,
         ];
     }
 
@@ -54,7 +56,9 @@ class PointLogResource extends Resource
             'index' => ListPointLogs::route('/'),
             'create-by-student' => CreateByStudent::route('/create/by-student'),
             'create-by-conduct' => CreateByConduct::route('/create/by-conduct'),
+            'mass-input' => InputForWholeClass::route('/mass-input'),
             'view' => ViewPointLog::route('/{record}'),
+            
             // 'edit-by-student' => CreateByStudent::route('/{record}/edit/by-student'),
             // 'edit-by-conduct' => CreateByConduct::route('/{record}/edit/by-conduct'),
         ];

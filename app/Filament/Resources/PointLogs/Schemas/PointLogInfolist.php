@@ -27,6 +27,8 @@ class PointLogInfolist
                         'ConductRule' => 'Aturan Perilaku',
                         default => 'siubject',
                     })
+                    ->columnSpan(2)
+                    ->wrap()
                     ->badge()
                     ->numeric(),
                 // TextEntry::make('updated_at')
