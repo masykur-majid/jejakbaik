@@ -30,12 +30,13 @@ class ParapointPanelProvider extends PanelProvider
             ->id('parapoint')
             ->path('parapoint')
             ->maxContentWidth('full')
+            ->topNavigation()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->resources([
-                ConductRuleResource::class,
+                // ConductRuleResource::class,
                 PointLogResource::class,
                 StudentPointResource::class,
             ])

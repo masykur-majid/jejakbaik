@@ -33,22 +33,22 @@ class ListStudentPoints extends ListRecords
             //     ->color(Color::Purple)
             //     ->url(PointLogResource::getUrl('create-by-conduct')),
 
-            Action::make('add_default_point')
-                ->label('Assign Default point')
-                ->icon('tabler-file-description')
-                ->color(Color::Zinc)
-                ->requiresConfirmation()
-                ->modalDescription('Yakin ingin untuk memberikan point 150 ke siswa dengan data null?')
-                ->action(function(){
-                    $setPoint = Student::query()
-                                    // ->whereNull('current_points')
-                                    ->update(['current_points' => 150]);
+            // Action::make('add_default_point')
+            //     ->label('Assign Default point')
+            //     ->icon('tabler-file-description')
+            //     ->color(Color::Zinc)
+            //     ->requiresConfirmation()
+            //     ->modalDescription('Yakin ingin untuk memberikan point 150 ke siswa dengan data null?')
+            //     ->action(function(){
+            //         $setPoint = Student::query()
+            //                         // ->whereNull('current_points')
+            //                         ->update(['current_points' => 150]);
                     
-                    Notification::make()
-                        ->title("{$setPoint} student(s) assigned 15 point")
-                        ->success()
-                        ->send();                
-            }),
+            //         Notification::make()
+            //             ->title("{$setPoint} student(s) assigned 15 point")
+            //             ->success()
+            //             ->send();                
+            // }),
         ];
     }
     
