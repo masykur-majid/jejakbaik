@@ -133,7 +133,7 @@ class PointLogForm
                                 ->rows(2)
                                 ->columnSpanFull(),
                             FileUpload::make('evidence_photo')
-                                ->label('Foto Produk')
+                                ->label('Foto Bukti')
                                 ->disk('r2')
                                 ->directory('uploads/images')
                                 ->image()
@@ -291,14 +291,19 @@ class PointLogForm
                                 ->rows(2)
                                 ->columnSpanFull(),
                             FileUpload::make('evidence_photo')
-                                ->label('Foto Produk')
+                                ->label('Foto Bukti')
                                 ->disk('r2')
                                 ->directory('uploads/images')
                                 ->image()
-                                ->saveUploadedFileUsing(function ($file) {
+                                ->saveUploadedFileUsing(function ($file, Get $get) {
+                                    $classId = $get('class_group_id');
+                                    $ClassName = ClassGroup::where('id', $classId)->value('class_name');
+                                    $classGroupSlug =   $ClassName ?? 'unknown-class';
+                                    $directory = "uploads/images/".strtoupper($classGroupSlug);
+                                    // dd($directory);
                                     return ImageUploadHelper::convertAndStore(
                                         file: $file,
-                                        directory: 'uploads/images',
+                                        directory: $directory,
                                         disk: 'r2',
                                         quality: 80,
                                         maxWidth: 1200
