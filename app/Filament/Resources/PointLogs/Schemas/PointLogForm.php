@@ -7,6 +7,7 @@ use App\Models\ConductRule;
 use App\Models\PointRule;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Support\ImageUploadHelper;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -22,6 +23,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class PointLogForm
 {
@@ -130,13 +132,36 @@ class PointLogForm
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
+                            FileUpload::make('evidence_photo')
+                                ->label('Foto Produk')
+                                ->disk('r2')
+                                ->directory('uploads/images')
+                                ->image()
+                                ->saveUploadedFileUsing(function ($file, Get $get) {
+                                    $studentId = $get('../../subject_id');
+                                    $student = Student::with('classGroup')->find($studentId);
+                                    $classGroupSlug =   $student && $student->classGroup
+                                                        ? Str::slug($student->classGroup->class_name)
+                                                        : 'unknown-class';
+                                    $directory = "uploads/images/".strtoupper($classGroupSlug);
+                                    // dd($directory);
+                                    return ImageUploadHelper::convertAndStore(
+                                        file: $file,
+                                        directory: $directory,
+                                        disk: 'r2',
+                                        quality: 80,
+                                        maxWidth: 1200
+                                    );
+                                })
+                                ->required(),
                             ])
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record){
                             $data['student_id'] = $record->subject_id;
                             return $data;
                         })
                         ->columns(2)
-                        ->grid(3)
+                        ->grid(3),
+                    
                 ])
                 ->columns(1);             
     }
@@ -190,6 +215,8 @@ class PointLogForm
                             ->label('Poin')
                             ->disabled()
                             ->dehydrated(),
+                        
+                        
                     ])
                     ->columns(6),
                     
@@ -263,6 +290,21 @@ class PointLogForm
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
+                            FileUpload::make('evidence_photo')
+                                ->label('Foto Produk')
+                                ->disk('r2')
+                                ->directory('uploads/images')
+                                ->image()
+                                ->saveUploadedFileUsing(function ($file) {
+                                    return ImageUploadHelper::convertAndStore(
+                                        file: $file,
+                                        directory: 'uploads/images',
+                                        disk: 'r2',
+                                        quality: 80,
+                                        maxWidth: 1200
+                                    );
+                                })
+                                ->required(),
                         ])
                         ->columns(2)
                         ->grid(3)

@@ -4,6 +4,8 @@ namespace App\Filament\Resources\StudentPoints\RelationManagers;
 
 use App\Filament\Resources\StudentPoints\Pages\ViewStudentPoint;
 use App\Models\ConductRule;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -24,8 +26,11 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Override;
 
 class PointLogDetailsRelationManager extends RelationManager
@@ -200,14 +205,30 @@ class PointLogDetailsRelationManager extends RelationManager
                 // AssociateAction::make(),
             ])
             ->recordActions([
-                // ViewAction::make(),
-                EditAction::make()
-                    ->label('Lihat / Edit')
-                    ->after(function(){
-                        $this->dispatch('refreshStudentPoint');
-                    }),
-                // DissociateAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    // ViewAction::make(),
+                        EditAction::make()
+                            ->label('Edit Data')
+                            ->after(function(){
+                                $this->dispatch('refreshStudentPoint');
+                            }),
+                        Action::make('view-image')
+                            ->modal()
+                            ->label('Lihat Bukti')
+                            ->icon(Heroicon::Photo)
+                            ->modalHeading('Foto Bukti')
+                            ->modalContent(fn ($record) => new HtmlString(
+                                '<div class="flex justify-center">
+                                    <img src="'.Storage::disk('r2')->url($record->evidence_photo).'"
+                                        class="max-w-full max-h-[70vh] rounded-lg" alt="foto bukti">
+                                </div>'
+                            ))
+                            ->modalSubmitAction(false)
+                            ->modalCancelActionLabel('Tutup'),
+                        // DissociateAction::make(),
+                        DeleteAction::make()
+                            ->label('Hapus'),
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
