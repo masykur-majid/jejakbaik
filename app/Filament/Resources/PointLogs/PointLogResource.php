@@ -4,13 +4,9 @@ namespace App\Filament\Resources\PointLogs;
 
 use App\Filament\Resources\PointLogs\Pages\CreateByConduct;
 use App\Filament\Resources\PointLogs\Pages\CreateByStudent;
-use App\Filament\Resources\PointLogs\Pages\CreatePointLog;
-use App\Filament\Resources\PointLogs\Pages\EditPointLog;
 use App\Filament\Resources\PointLogs\Pages\InputForWholeClass;
 use App\Filament\Resources\PointLogs\Pages\ListPointLogs;
 use App\Filament\Resources\PointLogs\Pages\ViewPointLog;
-use App\Filament\Resources\PointLogs\RelationManagers\PointLogDetailsRelationManager;
-use App\Filament\Resources\PointLogs\Schemas\PointLogForm;
 use App\Filament\Resources\PointLogs\Schemas\PointLogInfolist;
 use App\Filament\Resources\PointLogs\Tables\PointLogsTable;
 use App\Filament\Resources\StudentPoints\RelationManagers\PointLogDetailsRelationManager as RelationManagersPointLogDetailsRelationManager;
@@ -19,9 +15,9 @@ use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
+use Override;
 
 class PointLogResource extends Resource
 {
@@ -49,6 +45,23 @@ class PointLogResource extends Resource
             RelationManagersPointLogDetailsRelationManager::class,
         ];
     }
+
+
+    #[Override]
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if(auth()->user()->hasRole('teacher')){
+            $query->where('teacher_id', function ($subquery) {
+                                $subcquery->select('id')
+                                    ->from('teachers')
+                                    ->where('user_id', auth()->id())
+                                    ->limit(1);
+                        });
+        }
+        return $query;
+    }
+ 
 
     public static function getPages(): array
     {
