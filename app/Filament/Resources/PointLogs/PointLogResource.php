@@ -53,7 +53,7 @@ class PointLogResource extends Resource
         $query = parent::getEloquentQuery();
         if(auth()->user()->hasRole('teacher')){
             $query->where('teacher_id', function ($subquery) {
-                                $subcquery->select('id')
+                                $subquery->select('id')
                                     ->from('teachers')
                                     ->where('user_id', auth()->id())
                                     ->limit(1);
