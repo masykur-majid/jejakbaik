@@ -220,7 +220,7 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->modalContent(fn ($record) => new HtmlString(
                                 '<div class="flex justify-center">
                                     <img src="'.Storage::disk('r2')->url($record->evidence_photo).'"
-                                        class="max-w-full max-h-[70vh] rounded-lg" alt="foto bukti">
+                                        class="w-36 rounded-lg" alt="foto bukti">
                                 </div>'
                             ))
                             ->modalSubmitAction(false)

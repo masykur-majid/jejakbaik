@@ -30,6 +30,7 @@ class ParapointPanelProvider extends PanelProvider
             ->id('parapoint')
             ->path('parapoint')
             ->maxContentWidth('full')
+            ->profile()
             ->topNavigation()
             ->login()
             ->colors([

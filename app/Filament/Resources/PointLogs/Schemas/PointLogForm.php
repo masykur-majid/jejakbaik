@@ -49,7 +49,7 @@ class PointLogForm
 
                                 if($teacher && $teacher->classgroups){
                                     $classGroupIds = $teacher->classgroups->pluck('id')->toArray();
-                                    return Student::where('class_group_id', $classGroupIds)
+                                    return Student::whereIn('class_group_id', $classGroupIds)
                                                         ->pluck('student_name', 'id');
                                 }
                                 return [];                                
