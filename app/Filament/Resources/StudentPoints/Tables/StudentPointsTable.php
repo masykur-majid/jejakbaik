@@ -10,6 +10,8 @@ use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class StudentPointsTable
@@ -36,7 +38,10 @@ class StudentPointsTable
                     
             ])
             ->filters([
-                //
+                 SelectFilter::make('class_group_id')
+                    ->label('Class Name')
+                    ->relationship('classgroup', 'class_name')
+                    ->placeholder('-'),
             ])
             ->recordActions([
                 ViewAction::make(),

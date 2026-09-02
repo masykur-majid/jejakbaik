@@ -11,6 +11,7 @@ use App\Filament\Resources\StudentPoints\Tables\StudentPointsTable;
 use App\Models\Student;
 use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -26,15 +27,25 @@ class StudentPointResource extends Resource
     protected static ?string $slug = 'student-point';
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::Stars;
-    protected static string | BackedEnum | null $activeNavigationIcon = TablerIcon::StarsFilled;
 
-    
+    protected static string | BackedEnum | null $activeNavigationIcon = TablerIcon::StarsFilled;
     
     protected static ?string $navigationLabel = 'Lihat Poin Siswa';
  
     protected static ?string $pluralLabel = 'Daftar Poin Siswa';
  
     protected static ?string $modelLabel = 'Student Point';
+
+    public static function getNavigationGroup(): ?string
+    {
+        // Check if the current active panel ID matches your admin panel
+        if (Filament::getCurrentPanel()?->getId() === 'admin') {
+            return 'ParaPoint';
+        }
+
+        // Return null (ungrouped) for any other panel
+        return null;
+    }
     
     public static function form(Schema $schema): Schema
     {

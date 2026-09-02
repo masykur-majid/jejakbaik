@@ -23,6 +23,10 @@ class ConductRulesTable
                     ->wrap()
                     ->sortable(),
                 TextColumn::make('category')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'Achievement' => 'Pencapaian',
+                        'Violation' => 'Pelanggaran'
+                })
                     ->searchable(),
                 TextColumn::make('conduct_point')
                     ->numeric()
@@ -51,6 +55,7 @@ class ConductRulesTable
             ->headerActions([
                 ImportAction::make()
                     ->importer(ConductRuleImporter::class)
+                    ->visible(fn (): bool => auth()->user()?->hasRole('super_admin')),
             ]);
     }
 }

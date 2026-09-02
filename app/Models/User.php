@@ -36,9 +36,15 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
+        // Replace 'admin' with your target panel's ID 
+        // Replace $this->is_admin with your actual admin check or Spatie role check ($this->hasRole('admin'))
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('super_admin'); // or $this->is_admin if you have a boolean column for admin
+        }
+
+        // Allow access to other panels by default if needed
         return true;
     }
-
     public function student(): HasOne{
         return $this->hasOne(Student::class, 'user_id');
     }

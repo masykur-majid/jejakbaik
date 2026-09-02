@@ -12,6 +12,7 @@ use App\Filament\Resources\ConductRules\Tables\ConductRulesTable;
 use App\Models\ConductRule;
 use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -23,6 +24,21 @@ class ConductRuleResource extends Resource
     protected static ?string $model = ConductRule::class;
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::Notebook;
+
+    // protected static string| UnitEnum |null $navigationGroup = 'ParaPoint';
+
+    protected static ?string $navigationLabel = 'Aturan Poin';
+
+    public static function getNavigationGroup(): ?string
+    {
+        // Check if the current active panel ID matches your admin panel
+        if (Filament::getCurrentPanel()?->getId() === 'admin') {
+            return 'ParaPoint';
+        }
+
+        // Return null (ungrouped) for any other panel
+        return null;
+    }
 
     public static function form(Schema $schema): Schema
     {

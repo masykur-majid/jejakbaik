@@ -12,6 +12,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class StudentsTable
 {
@@ -59,7 +60,6 @@ class StudentsTable
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
             ])
             ->recordActions([
                 ViewAction::make()

@@ -24,14 +24,14 @@ class ListConductRules extends ListRecords
     {
         return [
             'all' => Tab::make('All')
-                            ->label('Show All'),
+                            ->label('Tampilkan Semua'),
             
-            'Achievement' => Tab::make('Achievement Point') 
+            'Achievement' => Tab::make('Penambah Point') 
                         ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Achievement'))
                         ->badge($this->getModel()::where('category', 'Achievement')->count())
                         ->icon(Heroicon::PlusCircle),
             
-            'Violation' => Tab::make('Violation Point') 
+            'Violation' => Tab::make('Pengurang Point') 
                         ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Violation'))
                         ->badge($this->getModel()::where('category', 'Violation')->count())
                         ->icon(Heroicon::MinusCircle),

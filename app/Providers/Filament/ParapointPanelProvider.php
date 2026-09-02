@@ -37,7 +37,7 @@ class ParapointPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->resources([
-                // ConductRuleResource::class,
+                ConductRuleResource::class,
                 PointLogResource::class,
                 StudentPointResource::class,
             ])

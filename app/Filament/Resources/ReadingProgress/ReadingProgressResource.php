@@ -23,6 +23,7 @@ class ReadingProgressResource extends Resource
     protected static ?string $model = ReadingProgress::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    
     protected static string| UnitEnum |null $navigationGroup = 'Literasi Pagi';
 
     public static function form(Schema $schema): Schema

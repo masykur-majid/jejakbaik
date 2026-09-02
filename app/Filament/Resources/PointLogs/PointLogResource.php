@@ -13,11 +13,13 @@ use App\Filament\Resources\StudentPoints\RelationManagers\PointLogDetailsRelatio
 use App\Models\PointLog;
 use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
+use UnitEnum;
 
 class PointLogResource extends Resource
 {
@@ -25,9 +27,22 @@ class PointLogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::ListDetailsFilled;
 
+    // protected static string| UnitEnum |null $navigationGroup = 'ParaPoint';
+
     protected static ?string $navigationLabel = 'Input Poin';
 
     protected static ?string $pluralLabel = 'Input Poin';
+
+    public static function getNavigationGroup(): ?string
+    {
+        // Check if the current active panel ID matches your admin panel
+        if (Filament::getCurrentPanel()?->getId() === 'admin') {
+            return 'ParaPoint';
+        }
+
+        // Return null (ungrouped) for any other panel
+        return null;
+    }
 
     public static function infolist(Schema $schema): Schema
     {
