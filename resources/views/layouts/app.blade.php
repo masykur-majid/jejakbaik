@@ -17,14 +17,17 @@
 
         @filamentStyles
         @vite('resources/css/app.css')
+        @fluxAppearance
     </head>
 
-    <body class="antialiased">
+    <body class="antialiased w-full">
         {{ $slot }}
 
         @livewire('notifications')
 
         @filamentScripts
         @vite('resources/js/app.js')
+        @fluxScripts
+
     </body>
 </html>
