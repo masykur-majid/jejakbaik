@@ -218,13 +218,15 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->icon(Heroicon::Photo)
                             ->modalHeading('Foto Bukti')
                             ->modalContent(fn ($record) => new HtmlString(
-                                '<div class="flex justify-center">
+                                '<div class="flex justify-center h-6">
                                     <img src="'.Storage::disk('r2')->url($record->evidence_photo).'"
-                                        class="w-36 rounded-lg" alt="foto bukti">
+                                        class="max-h-16 w-auto object-contain rounded-lg" alt="Bukti Foto">
                                 </div>'
                             ))
                             ->modalSubmitAction(false)
-                            ->modalCancelActionLabel('Tutup'),
+                            ->modalCancelActionLabel('Tutup')
+                            ->slideOver()
+                            ->modalWidth('md'),
                         // DissociateAction::make(),
                         DeleteAction::make()
                             ->label('Hapus'),
