@@ -14,13 +14,10 @@ class PointLogInfolist
                 TextEntry::make('subject_type')
                     ->label('Input Berdasarkan:')
                     ->formatStateUsing(fn (string $state): string => class_basename($state)=='Student' ? 'Siswa' : 'Perilaku')
-                    ->badge(),
-                TextEntry::make('teacher.teacher_name')
-                    ->label('Dibuat Oleh:'),
-                TextEntry::make('created_at')
-                    ->label('Dibuat pada:')
-                    ->dateTime()
-                    ->placeholder('-'),
+                    ->size('xl')
+                    ->size('lg')
+                    ->weight('black')
+                    ->color('primary'),
                 TextEntry::make('subject_name')
                     ->label(fn ($record) => match (class_basename($record->subject_type)) {
                         'Student' => 'Nama Siswa',
@@ -31,6 +28,14 @@ class PointLogInfolist
                     ->wrap()
                     ->badge()
                     ->numeric(),
+                TextEntry::make('teacher.teacher_name')
+                    ->label('Dibuat Oleh:')
+                    ->size('xs'),
+                TextEntry::make('created_at')
+                    ->label('Dibuat pada:')
+                    ->size('xs')
+                    ->dateTime()
+                    ->placeholder('-'),
                 // TextEntry::make('updated_at')
                 //     ->dateTime()
                 //     ->placeholder('-'),

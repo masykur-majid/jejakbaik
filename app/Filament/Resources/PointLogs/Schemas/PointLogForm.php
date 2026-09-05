@@ -313,7 +313,6 @@ class PointLogForm
                         ])
                         ->columns(2)
                         ->grid(3)
-                        ->cloneable()
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record, $component){
                             $data['conduct_rule_id'] = $record->subject_id;
 

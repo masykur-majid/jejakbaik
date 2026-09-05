@@ -28,8 +28,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -149,77 +147,71 @@ class PointLogDetailsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('conduct_name')
             ->columns([
-                Split::make([
-                    Stack::make([
-                        TextColumn::make('pointLog.subject_type')
-                            ->label('Kategori')
-                            ->getStateUsing(function ($record){
-                                // dd($record->student_id);
-                                if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    
-                                    $conductRule = ConductRule::where('id', $record->pointLog?->subject_id)->first();
-                                    return $conductRule?->category;
-                                
-                                }
-                                else{
-                                    // dd("student: ".$record->student_id);
-                                    $student = Student::where('id', $record->student_id)->first();
-                                    return $student->student_name;
-                                }
-                            })
-                            ->badge()
-                            ->searchable()
-                            ->alignJustify(),
-                        
-                        TextColumn::make('conductRule.conduct_name')
-                            ->label('Aturan Poin')
-                            ->html()
-                            ->visible()
-                            ->searchable()
-                            ->grow(true)
-                            ->wrap()
-                            ->alignJustify(),
-                        TextColumn::make('occurrence_date')
-                            ->label('Tanggal')
-                            ->date()
-                            ->grow(false)
-                            ->size('xs')
-                            ->icon(Heroicon::Calendar)
-                            ->color(Color::Zinc)
-                            ->sortable(),
-                    ]),
-                    
-                
-                    TextColumn::make('conduct_point')
-                        ->label('Poin')
-                        ->grow(false)
-                        ->formatStateUsing(function ($record){
-                            $point = $record->conduct_point ?? 0;
-                            $occur = $record->occurrence_number ?? 0;
-                            return "{$point} x {$occur} = ";
-                        })
-                        ->extraHeaderAttributes(['class' => 'whitespace-normal']),
-                    TextColumn::make('counted_point')
-                        ->label('Total')
-                        ->grow(false)
-                        ->badge()
-                        ->numeric()
-                        ->width('60px')
-                        ->wrap()
-                        ->sortable()
-                        ->extraHeaderAttributes(['class' => 'whitespace-normal']),
-                    TextColumn::make('pointLog.teacher.teacher_name')
-                        ->label('Guru Pencatat')
-                        ->grow(false)
-                        ->badge()
-                        ->color(Color::Taupe)
-                        ->numeric()
-                        ->width('60px')
-                        ->wrap()
-                        ->sortable()
-                        ->extraHeaderAttributes(['class' => 'whitespace-normal']),
-                ])
-                
+                TextColumn::make('occurrence_date')
+                    ->label('Tanggal')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('pointLog.subject_type')
+                    ->label('Kategori')
+                    ->getStateUsing(function ($record){
+                        // dd($record->student_id);
+                        if($record->pointLog?->subject_type == 'App\Models\Student'){
+                            
+                            $conductRule = ConductRule::where('id', $record->pointLog?->subject_id)->first();
+                            return $conductRule?->category;
+                           
+                        }
+                        else{
+                            // dd("student: ".$record->student_id);
+                            $student = Student::where('id', $record->student_id)->first();
+                            return $student->student_name;
+                        }
+                    })
+                    ->badge()
+                    ->searchable()
+                    ->alignJustify(),
+                TextColumn::make('conductRule.conduct_name')
+                    ->label('Aturan Poin')
+                    ->html()
+                    ->description(function ($record){
+                        if($record->conductRule?->category === 'Achievement'){
+                            return new HtmlString("<span class='text-sm' style='color: #15803d; font-style: italic; font-weight: bold; font-size: 0.75rem;' >$record->action_notes</span>");
+
+                        }else{
+                            return new HtmlString("<span class='' style='color: #B91C1C; font-style: italic; font-weight: bold; font-size: 0.875rem;' >$record->action_notes</span>");
+                        }
+                    })
+                    ->visible()
+                    ->searchable()
+                    ->grow(true)
+                    ->wrap()
+                    ->alignJustify(),
+            
+                TextColumn::make('conduct_point')
+                    ->label('Poin')
+                    ->formatStateUsing(function ($record){
+                        $point = $record->conduct_point ?? 0;
+                        $occur = $record->occurrence_number ?? 0;
+                        return "{$point} x {$occur} = ";
+                    })
+                    ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+                TextColumn::make('counted_point')
+                    ->label('Total')
+                    ->badge()
+                    ->numeric()
+                    ->width('60px')
+                    ->wrap()
+                    ->sortable()
+                    ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+                TextColumn::make('pointLog.teacher.teacher_name')
+                    ->label('Guru Pencatat')
+                    ->badge()
+                    ->color(Color::Taupe)
+                    ->numeric()
+                    ->width('60px')
+                    ->wrap()
+                    ->sortable()
+                    ->extraHeaderAttributes(['class' => 'whitespace-normal']),
             ])
             ->filters([
                 //

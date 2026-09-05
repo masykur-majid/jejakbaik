@@ -29,6 +29,7 @@ class ParapointPanelProvider extends PanelProvider
         return $panel
             ->id('parapoint')
             ->path('parapoint')
+            ->viteTheme('resources/css/filament/parapoint/theme.css')
             ->maxContentWidth('full')
             ->profile()
             ->topNavigation()

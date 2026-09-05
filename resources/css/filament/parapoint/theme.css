@@ -1,0 +1,8 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/Parapoint/**/*';
+@source '../../../../resources/views/filament/parapoint/**/*';
+
+.fi-in-entry-label {
+    font-size: @apply text-sm; /* Adjust to your preferred size */
+}
