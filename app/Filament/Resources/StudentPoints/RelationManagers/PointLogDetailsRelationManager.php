@@ -27,6 +27,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -167,7 +168,11 @@ class PointLogDetailsRelationManager extends RelationManager
                                     return $student->student_name;
                                 }
                             })
-                            ->badge()
+                            
+                            ->color(Color::Teal)
+                            ->size('sm')
+                            ->formatStateUsing(fn (?string $state): ?string => filled($state) ? strtoupper($state) : null)
+                            ->weight(FontWeight::Bold)
                             ->searchable()
                             ->alignJustify(),
                         
@@ -178,7 +183,15 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->searchable()
                             ->grow(true)
                             ->wrap()
-                            ->alignJustify(),
+                            ->alignJustify()
+                            ->description(function ($record){
+                                if($record->conductRule?->category === 'Achievement'){
+                                    return new HtmlString("<span class='pt-0' style='color: #15803d; font-style: italic; font-weight: bold; font-size: 0.75rem; margin-top:0;' >$record->action_notes</span>");
+
+                                }else{
+                                    return new HtmlString("<span class='pt-0' style='color: #B91C1C; font-style: italic; font-weight: bold; font-size: 0.875rem; margin-top:0;' >$record->action_notes</span>");
+                                }
+                            }, position: 'above'),
                         TextColumn::make('occurrence_date')
                             ->label('Tanggal')
                             ->date()
