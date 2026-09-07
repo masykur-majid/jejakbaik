@@ -28,7 +28,9 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
@@ -151,30 +153,70 @@ class PointLogDetailsRelationManager extends RelationManager
             ->recordTitleAttribute('conduct_name')
             ->columns([
                 Split::make([
+
+                    IconColumn::make('pointLog.subject_type')
+                        ->icon(function ($record) {
+                            // dd($record->conductRule?->category);
+                            if($record->pointLog?->subject_type != 'App\Models\Student'){
+                                return Heroicon::UserCircle;
+                            }
+                            else{
+                                if($record->conductRule?->category == 'Achievement'){
+                                    return Heroicon::PlusCircle;
+                                }
+                                else{
+                                    return Heroicon::MinusCircle;
+                                }
+                            }
+                        })
+                        ->color(function ($record) {
+                            if($record->pointLog?->subject_type != 'App\Models\Student'){
+                                return Color::Indigo;
+                            }
+                            else{
+                                if($record->conductRule?->category == 'Achievement'){
+                                    return Color::Green;
+                                }
+                                else{
+                                    return Color::Red;
+                                }
+                            }
+                        })
+                        ->grow(false)
+                        ->size('xl')
+                        ->extraAttributes(['class' => '!items-start [&_svg]:mt-1']),
+
                     Stack::make([
                         TextColumn::make('pointLog.subject_type')
                             ->label('Kategori')
                             ->getStateUsing(function ($record){
-                                // dd($record->student_id);
                                 if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    
-                                    $conductRule = ConductRule::where('id', $record->pointLog?->subject_id)->first();
-                                    return $conductRule?->category;
-                                
+                                    return $record->conductRule?->category == 'Achievement' ? 'Prestasi' : 'Pelanggaran';
                                 }
                                 else{
-                                    // dd("student: ".$record->student_id);
-                                    $student = Student::where('id', $record->student_id)->first();
-                                    return $student->student_name;
+                                    return $record->student?->student_name;
                                 }
                             })
-                            
-                            ->color(Color::Teal)
-                            ->size('sm')
-                            ->formatStateUsing(fn (?string $state): ?string => filled($state) ? strtoupper($state) : null)
                             ->weight(FontWeight::Bold)
+                            ->color(function ($record){
+                                if($record->pointLog?->subject_type == 'App\Models\Student'){
+                                    if($record->conductRule?->category == 'Achievement'){
+                                        return Color::Green;
+                                    }
+                                    else{
+                                        return Color::Red;
+                                    }
+                                }
+                                else{
+                                    return Color::Indigo;
+                                }
+                            })
+                            ->size('xl')
                             ->searchable()
-                            ->alignJustify(),
+                            ->alignJustify()
+                            ->extraAttributes([
+                                'class' => '[&_.fi-badge-label]:text-base [&_.fi-badge-label]:font-bold [&_.fi-badge]:py-1.5 [&_.fi-badge]:px-3.5 [&_.fi-badge-icon]:h-5 [&_.fi-badge-icon]:w-5',
+                            ]),
                         
                         TextColumn::make('conductRule.conduct_name')
                             ->label('Aturan Poin')
@@ -184,14 +226,16 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->grow(true)
                             ->wrap()
                             ->alignJustify()
-                            ->description(function ($record){
-                                if($record->conductRule?->category === 'Achievement'){
-                                    return new HtmlString("<span class='pt-0' style='color: #15803d; font-style: italic; font-weight: bold; font-size: 0.75rem; margin-top:0;' >$record->action_notes</span>");
+                            // ->description(function ($record){
+                            //     if($record->conductRule?->category === 'Achievement'){
+                            //         return new HtmlString("<span class='pt-0' style='color: #15803d; font-style: italic; font-weight: bold; font-size: 0.75rem; margin-top:0;' >$record->action_notes</span>");
 
-                                }else{
-                                    return new HtmlString("<span class='pt-0' style='color: #B91C1C; font-style: italic; font-weight: bold; font-size: 0.875rem; margin-top:0;' >$record->action_notes</span>");
-                                }
-                            }, position: 'above'),
+                            //     }else{
+                            //         return new HtmlString("<span class='pt-0' style='color: #B91C1C; font-style: italic; font-weight: bold; font-size: 0.875rem; margin-top:0;' >$record->action_notes</span>");
+                            //     }
+                            // }, position: 'above')
+                            ->size('xs')
+                            ->color(Color::Zinc),
                         TextColumn::make('occurrence_date')
                             ->label('Tanggal')
                             ->date()
@@ -232,6 +276,7 @@ class PointLogDetailsRelationManager extends RelationManager
                         ->sortable()
                         ->extraHeaderAttributes(['class' => 'whitespace-normal']),
                 ])
+                ->extraAttributes(['class' => 'baris-log-rata-atas'])
                 
             ])
             ->filters([
