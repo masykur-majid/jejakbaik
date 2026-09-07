@@ -3,6 +3,43 @@
 @source '../../../../app/Filament/Parapoint/**/*';
 @source '../../../../resources/views/filament/parapoint/**/*';
 
-.fi-in-entry-label {
-    font-size: @apply text-sm; /* Adjust to your preferred size */
+
+.badge-xl-bold {
+    & .fi-badge {
+        @apply py-1.5 px-3.5; /* Memperbesar ukuran bungkus badge */
+    }
+    & .fi-badge-label {
+        @apply text-base font-bold; /* Membuat teks berukuran XL dan Tebal */
+    }
+    & .fi-badge-icon {
+        @apply h-5 w-5; /* Memperbesar ikon biar seimbang */
+    }
+}
+
+.fi-table-icon-align-top,
+.fi-table-icon-align-top > div {
+    vertical-align: top !important;
+    align-items: flex-start !important;
+    padding-top: 0.5rem !important; /* Optional: adds a little breathing room at the top */
+}
+
+
+
+.baris-log-rata-atas .fi-ta-icon svg {
+    margin-top: 4px !important;
+    width: 3rem !important;  /* Ukuran lebar baru (bisa diganti 40px, dll) */
+    height: 3rem !important; /* Ukuran tinggi baru (bisa diganti 40px, dll) */
+}
+
+.rapat-text-wrapper {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
+}
+
+/* Memaksa elemen di bawahnya naik tepat di bawah teks merah */
+.rapat-text-bawah {
+    margin-top: -2px !important; /* Sesuaikan nilainya (misal -4px) jika masih kurang naik */
+    padding-top: 0 !important;
+    line-height: 1.2 !important;
 }

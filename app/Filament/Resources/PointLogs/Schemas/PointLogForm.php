@@ -4,16 +4,13 @@ namespace App\Filament\Resources\PointLogs\Schemas;
 
 use App\Models\ClassGroup;
 use App\Models\ConductRule;
-use App\Models\PointRule;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Support\ImageUploadHelper;
-use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -34,6 +31,7 @@ class PointLogForm
                 Section::make('Log Info')
                     ->icon(Heroicon::User)
                     ->schema([
+
                         Hidden::make('subject_type')
                             ->default('student')
                             ->dehydrated(),
@@ -78,6 +76,7 @@ class PointLogForm
                         ->relationship('pointLogDetails')
                         ->addActionLabel('Tambah Catatan Poin')
                         ->schema([
+
                             Select::make('conduct_rule_id')
                                 ->relationship('conductRule', 'conduct_name')
                                 ->label('Aturan Poin Yang Dikerjakan')
@@ -85,6 +84,7 @@ class PointLogForm
                                 ->searchable()
                                 ->required()
                                 ->live()
+                                ->columnSpanFull()
                                 ->afterStateUpdated(function (string $state, Set $set){
                                     if($state){
                                         $PointRule = ConductRule::find($state);
@@ -93,17 +93,19 @@ class PointLogForm
                                     }else{
                                         $set('conduct_point', 0);
                                     }
-                                })
-                                ->columnSpanFull(),
+                                }),
+                                
                             DatePicker::make('occurrence_date')
                                 ->label('Tanggal Kejadian')
                                 ->required(),
+
                             TextInput::make('conduct_point')
                                 ->label('Poin')
                                 ->required()
                                 ->numeric()
                                 ->disabled()
                                 ->dehydrated(),
+
                             TextInput::make('occurrence_number')
                                 ->label('Banyak Kejadian')
                                 ->required()
@@ -121,19 +123,25 @@ class PointLogForm
                                         $set('counted_point', 0);
                                     }
                                 }),
+
                             TextInput::make('counted_point')
                                 ->label('Total Poin')
                                 ->required()
                                 ->numeric()
                                 ->disabled()
                                 ->dehydrated(),
+
                             Textarea::make('action_notes')
                                 ->label('Keterangan')
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
+
+                            // FileUpload::make('evidence_photo'),
+
                             FileUpload::make('evidence_photo')
                                 ->label('Foto Bukti')
+                                ->required()
                                 ->disk('r2')
                                 ->directory('uploads/images')
                                 ->image()
@@ -152,16 +160,15 @@ class PointLogForm
                                         quality: 80,
                                         maxWidth: 1200
                                     );
-                                })
-                                ->required(),
+                                }),
                             ])
+                            
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record){
                             $data['student_id'] = $record->subject_id;
                             return $data;
                         })
                         ->columns(2)
                         ->grid(3),
-                    
                 ])
                 ->columns(1);             
     }
@@ -173,12 +180,15 @@ class PointLogForm
                 Section::make('Log Info')
                     ->icon(Heroicon::User)
                     ->schema([
+
                         Hidden::make('subject_type')
                             ->default('conduct')
                             ->dehydrated(),
+
                         Hidden::make('Date')
                             ->dehydrated(false)
                             ->default(now()->format('d M Y')),
+
                         Select::make('teacher_id')
                             ->label('Guru Pencatat')
                             ->columnSpan(2)
@@ -186,6 +196,7 @@ class PointLogForm
                             ->preload()
                             ->searchable()
                             ->required(),
+
                         Select::make('subject_id')
                             ->label('Aturan Poin yang Dikerjakan')
                             ->options(ConductRule::pluck('conduct_name', 'id'))
@@ -211,12 +222,11 @@ class PointLogForm
                                         $set('conduct_point', 0);
                                     }
                                 }),
+
                         TextInput::make('conduct_point')
                             ->label('Poin')
                             ->disabled()
                             ->dehydrated(),
-                        
-                        
                     ])
                     ->columns(6),
                     
@@ -227,6 +237,7 @@ class PointLogForm
                             DatePicker::make('occurrence_date')
                                 ->label('Tanggal Kejadian')
                                 ->required(),
+
                             Select::make('class_group_id')
                                 ->label('Kelas')
                                 ->placeholder('Pilih Kelas')  
@@ -240,6 +251,7 @@ class PointLogForm
                                 ->live()
                                 ->dehydrated(false)
                                 ->columnSpan(1),
+
                             Select::make('student_id')
                                 ->label('Nama Siswa')
                                 ->placeholder('select students')
@@ -255,6 +267,7 @@ class PointLogForm
                                 ->preload()
                                 ->searchable()
                                 ->columnSpan(2),
+
                             TextInput::make('occurrence_number')
                                 ->label('Jumlah Kejadian')
                                 ->required()
@@ -272,6 +285,7 @@ class PointLogForm
                                         $set('counted_point', $conductPoint);
                                     }
                                 }),
+
                             TextInput::make('counted_point')
                                 ->label('Total Poin')
                                 ->required()
@@ -285,11 +299,14 @@ class PointLogForm
                                     return $state ?? $conductPoint;
                                 })
                                 ->dehydrated(),
+
                             Textarea::make('action_notes')
                                 ->label('Keterangan')
                                 ->required()
                                 ->rows(2)
                                 ->columnSpanFull(),
+
+                            // FileUpload::make('evidence_photo'),
                             FileUpload::make('evidence_photo')
                                 ->label('Foto Bukti')
                                 ->disk('r2')

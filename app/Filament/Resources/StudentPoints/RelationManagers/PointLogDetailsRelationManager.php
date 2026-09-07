@@ -2,22 +2,14 @@
 
 namespace App\Filament\Resources\StudentPoints\RelationManagers;
 
-use App\Filament\Resources\StudentPoints\Pages\ViewStudentPoint;
 use App\Models\ConductRule;
-use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -28,7 +20,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
-use Filament\Support\Enums\VerticalAlignment;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Layout\Split;
@@ -161,25 +152,15 @@ class PointLogDetailsRelationManager extends RelationManager
                                 return Heroicon::UserCircle;
                             }
                             else{
-                                if($record->conductRule?->category == 'Achievement'){
-                                    return Heroicon::PlusCircle;
-                                }
-                                else{
-                                    return Heroicon::MinusCircle;
-                                }
+                                return $record->conductRule?->category == 'Achievement' ? Heroicon::PlusCircle : Heroicon::MinusCircle;
                             }
                         })
                         ->color(function ($record) {
                             if($record->pointLog?->subject_type != 'App\Models\Student'){
-                                return Color::Indigo;
+                                return Color::Violet;
                             }
                             else{
-                                if($record->conductRule?->category == 'Achievement'){
-                                    return Color::Green;
-                                }
-                                else{
-                                    return Color::Red;
-                                }
+                                return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
                             }
                         })
                         ->grow(false)
@@ -200,15 +181,10 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->weight(FontWeight::Bold)
                             ->color(function ($record){
                                 if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    if($record->conductRule?->category == 'Achievement'){
-                                        return Color::Green;
-                                    }
-                                    else{
-                                        return Color::Red;
-                                    }
+                                    return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
                                 }
                                 else{
-                                    return Color::Indigo;
+                                    return Color::Violet;
                                 }
                             })
                             ->size('xl')
@@ -217,7 +193,7 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->extraAttributes([
                                 'class' => '[&_.fi-badge-label]:text-base [&_.fi-badge-label]:font-bold [&_.fi-badge]:py-1.5 [&_.fi-badge]:px-3.5 [&_.fi-badge-icon]:h-5 [&_.fi-badge-icon]:w-5',
                             ]),
-                        
+                                               
                         TextColumn::make('conductRule.conduct_name')
                             ->label('Aturan Poin')
                             ->html()
@@ -225,26 +201,17 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->searchable()
                             ->grow(true)
                             ->wrap()
-                            ->alignJustify()
-                            // ->description(function ($record){
-                            //     if($record->conductRule?->category === 'Achievement'){
-                            //         return new HtmlString("<span class='pt-0' style='color: #15803d; font-style: italic; font-weight: bold; font-size: 0.75rem; margin-top:0;' >$record->action_notes</span>");
-
-                            //     }else{
-                            //         return new HtmlString("<span class='pt-0' style='color: #B91C1C; font-style: italic; font-weight: bold; font-size: 0.875rem; margin-top:0;' >$record->action_notes</span>");
-                            //     }
-                            // }, position: 'above')
                             ->size('xs')
-                            ->color(Color::Zinc),
+                            ->color(Color::Mauve),
+
                         TextColumn::make('occurrence_date')
                             ->label('Tanggal')
                             ->date()
                             ->grow(false)
                             ->size('xs')
-                            ->icon(Heroicon::Calendar)
-                            ->color(Color::Zinc)
+                            ->color(Color::Slate)
                             ->sortable(),
-                    ]),
+                    ])->space(0),
                     
                 
                     TextColumn::make('conduct_point')
@@ -256,6 +223,7 @@ class PointLogDetailsRelationManager extends RelationManager
                             return "{$point} x {$occur} = ";
                         })
                         ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+
                     TextColumn::make('counted_point')
                         ->label('Total')
                         ->grow(false)
@@ -265,6 +233,7 @@ class PointLogDetailsRelationManager extends RelationManager
                         ->wrap()
                         ->sortable()
                         ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+
                     TextColumn::make('pointLog.teacher.teacher_name')
                         ->label('Guru Pencatat')
                         ->grow(false)
