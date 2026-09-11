@@ -43,3 +43,9 @@
     padding-top: 0 !important;
     line-height: 1.2 !important;
 }
+
+.point-large,
+.point-large * {
+    font-size: 3rem !important; /* Setara text-4xl, ubah sesuai kebutuhan */
+    line-height: 1 !important;
+}

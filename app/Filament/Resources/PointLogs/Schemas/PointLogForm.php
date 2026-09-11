@@ -50,7 +50,7 @@ class PointLogForm
                                     return Student::whereIn('class_group_id', $classGroupIds)
                                                         ->pluck('student_name', 'id');
                                 }
-                                return [];                                
+                                return [];
                             })
                             ->preload()
                             ->searchable()
@@ -70,7 +70,7 @@ class PointLogForm
                             ->required(),
                     ])
                     ->columns(2),
-                    
+
                     Repeater::make('pointLogDetails')
                         ->hiddenLabel()
                         ->relationship('pointLogDetails')
@@ -85,16 +85,17 @@ class PointLogForm
                                 ->required()
                                 ->live()
                                 ->columnSpanFull()
-                                ->afterStateUpdated(function (string $state, Set $set){
+                                ->afterStateUpdated(function (?string $state, Set $set){
                                     if($state){
                                         $PointRule = ConductRule::find($state);
                                         $set('conduct_point', $PointRule ? $PointRule->conduct_point : 0);
                                         $set('counted_point', $PointRule ? $PointRule->conduct_point : 0);
                                     }else{
                                         $set('conduct_point', 0);
+                                        $set('counted_point', 0);
                                     }
                                 }),
-                                
+
                             DatePicker::make('occurrence_date')
                                 ->label('Tanggal Kejadian')
                                 ->required(),
@@ -112,10 +113,10 @@ class PointLogForm
                                 ->numeric()
                                 ->default(1)
                                 ->live()
-                                ->afterStateUpdated(function ($state, Get $get, Set $set){
+                                ->afterStateUpdated(function (?string $state, Get $get, Set $set){
                                     $occurrenceNumber = $state;
                                     $actionValue = $get('conduct_point');
-                                    
+
                                     if($actionValue && $occurrenceNumber){
                                         $set('counted_point', $occurrenceNumber*$actionValue);
                                     }
@@ -145,6 +146,7 @@ class PointLogForm
                                 ->disk('r2')
                                 ->directory('uploads/images')
                                 ->image()
+                                ->columnSpanFull()
                                 ->saveUploadedFileUsing(function ($file, Get $get) {
                                     $studentId = $get('../../subject_id');
                                     $student = Student::with('classGroup')->find($studentId);
@@ -162,7 +164,7 @@ class PointLogForm
                                     );
                                 }),
                             ])
-                            
+
                         ->mutateRelationshipDataBeforeCreateUsing(function (array $data, $record){
                             $data['student_id'] = $record->subject_id;
                             return $data;
@@ -170,7 +172,7 @@ class PointLogForm
                         ->columns(2)
                         ->grid(3),
                 ])
-                ->columns(1);             
+                ->columns(1);
     }
 
     public static function configureByConduct(Schema $schema): Schema
@@ -205,21 +207,24 @@ class PointLogForm
                             ->required()
                             ->columnSpan(3)
                             ->live()
-                            ->afterStateUpdated(function (string $state, Set $set, Get $get){
+                            ->afterStateUpdated(function (?string $state, Set $set, Get $get){
                                     $repeaterItems = $get('pointLogDetails') ?? [];
                                     if($state){
                                         $PointRule = ConductRule::find($state);
                                         $set('conduct_point', $PointRule ? $PointRule->conduct_point : 0);
-                                       
+
                                         foreach ($repeaterItems as $uuid => $item) {
                                             // Tembak field 'occurrence_number' di dalam repeater berdasarkan UUID-nya
                                             $occurrence = $get("pointLogDetails.{$uuid}.occurrence_number");
                                             $set("pointLogDetails.{$uuid}.counted_point", $PointRule->conduct_point*$occurrence);
                                         }
                                     }
-                                    
+
                                     else{
                                         $set('conduct_point', 0);
+                                        foreach ($repeaterItems as $uuid => $item) {
+                                            $set("pointLogDetails.{$uuid}.counted_point", 0);
+                                        }
                                     }
                                 }),
 
@@ -229,10 +234,10 @@ class PointLogForm
                             ->dehydrated(),
                     ])
                     ->columns(6),
-                    
+
                     Repeater::make('pointLogDetails')
                         ->relationship('pointLogDetails')
-                        
+
                         ->schema([
                             DatePicker::make('occurrence_date')
                                 ->label('Tanggal Kejadian')
@@ -240,14 +245,14 @@ class PointLogForm
 
                             Select::make('class_group_id')
                                 ->label('Kelas')
-                                ->placeholder('Pilih Kelas')  
+                                ->placeholder('Pilih Kelas')
                                 ->options(function(){
                                     if(!auth()->user()->hasRole('super_admin')){
-                                        $teacherId = Teacher::where('user_id', auth()->id())->value('id');    
+                                        $teacherId = Teacher::where('user_id', auth()->id())->value('id');
                                         return ClassGroup::query()->where('form_teacher', $teacherId)->pluck('class_name', 'id');
                                     }
                                     return ClassGroup::query()->pluck('class_name', 'id');
-                                })    
+                                })
                                 ->live()
                                 ->dehydrated(false)
                                 ->columnSpan(1),
@@ -274,10 +279,10 @@ class PointLogForm
                                 ->numeric()
                                 ->live()
                                 ->default(1)
-                                ->afterStateUpdated(function ($state, Get $get, Set $set){
+                                ->afterStateUpdated(function (?string $state, Get $get, Set $set){
                                     $occurrenceNumber = $state;
                                     $conductPoint = $get('../../conduct_point');
-                                    
+
                                     if($conductPoint && $occurrenceNumber){
                                         $set('counted_point', $occurrenceNumber*$conductPoint);
                                     }
@@ -292,10 +297,10 @@ class PointLogForm
                                 ->numeric()
                                 ->readOnly()
                                 ->live()
-                                ->formatStateUsing(function ($state, Get $get, Set $set){
+                                ->formatStateUsing(function (?string $state, Get $get, Set $set){
                                     $occurrenceNumber = $get('occurrence_number');
                                     $conductPoint = $get('../../conduct_point');
-                                    
+
                                     return $state ?? $conductPoint;
                                 })
                                 ->dehydrated(),
@@ -326,7 +331,8 @@ class PointLogForm
                                         maxWidth: 1200
                                     );
                                 })
-                                ->required(),
+                                ->required()
+                                ->columnSpanFull(),
                         ])
                         ->columns(2)
                         ->grid(3)
@@ -338,6 +344,6 @@ class PointLogForm
                             return $data;
                         })
                 ])
-                ->columns(1);             
+                ->columns(1);
     }
 }

@@ -11,6 +11,7 @@ use App\Filament\Resources\PointLogs\Schemas\PointLogInfolist;
 use App\Filament\Resources\PointLogs\Tables\PointLogsTable;
 use App\Filament\Resources\StudentPoints\RelationManagers\PointLogDetailsRelationManager as RelationManagersPointLogDetailsRelationManager;
 use App\Models\PointLog;
+use App\Models\Teacher;
 use BackedEnum;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Facades\Filament;
@@ -18,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Override;
 use UnitEnum;
 
@@ -65,18 +67,17 @@ class PointLogResource extends Resource
     #[Override]
     public static function getEloquentQuery(): Builder
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $query = parent::getEloquentQuery();
-        if(auth()->user()->hasRole('teacher')){
-            $query->where('teacher_id', function ($subquery) {
-                                $subquery->select('id')
-                                    ->from('teachers')
-                                    ->where('user_id', auth()->id())
-                                    ->limit(1);
-                        });
+        if($user->hasRole('teacher')){
+            $teacherId = Teacher::where('user_id', Auth::id())->value('id');
+            $query->where('teacher_id', $teacherId);
         }
         return $query;
     }
- 
+
 
     public static function getPages(): array
     {
@@ -86,11 +87,11 @@ class PointLogResource extends Resource
             'create-by-conduct' => CreateByConduct::route('/create/by-conduct'),
             'mass-input' => InputForWholeClass::route('/mass-input'),
             'view' => ViewPointLog::route('/{record}'),
-            
+
             // 'edit-by-student' => CreateByStudent::route('/{record}/edit/by-student'),
             // 'edit-by-conduct' => CreateByConduct::route('/{record}/edit/by-conduct'),
         ];
     }
 
-    
+
 }

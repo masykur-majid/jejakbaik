@@ -144,28 +144,38 @@ class PointLogDetailsRelationManager extends RelationManager
             ->recordTitleAttribute('conduct_name')
             ->columns([
                 Split::make([
-
-                    IconColumn::make('pointLog.subject_type')
-                        ->icon(function ($record) {
-                            // dd($record->conductRule?->category);
-                            if($record->pointLog?->subject_type != 'App\Models\Student'){
-                                return Heroicon::UserCircle;
-                            }
-                            else{
-                                return $record->conductRule?->category == 'Achievement' ? Heroicon::PlusCircle : Heroicon::MinusCircle;
-                            }
-                        })
-                        ->color(function ($record) {
-                            if($record->pointLog?->subject_type != 'App\Models\Student'){
-                                return Color::Violet;
-                            }
-                            else{
-                                return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
-                            }
-                        })
+                    TextColumn::make('counted_point')
                         ->grow(false)
-                        ->size('xl')
-                        ->extraAttributes(['class' => '!items-start [&_svg]:mt-1']),
+                        ->extraAttributes(['class' => 'point-large'])
+                        ->weight(FontWeight::Light)
+                        ->color(function ($record){
+                            return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
+                        })
+                        ->getStateUsing(function ($record){
+                            return $record->counted_point > 0 ? '+'.$record->counted_point : '-'.$record->counted_point;
+                        }),
+
+                    // IconColumn::make('pointLog.subject_type')
+                    //     ->icon(function ($record) {
+                    //         // dd($record->conductRule?->category);
+                    //         if($record->pointLog?->subject_type != 'App\Models\Student'){
+                    //             return Heroicon::UserCircle;
+                    //         }
+                    //         else{
+                    //             return $record->conductRule?->category == 'Achievement' ? Heroicon::PlusCircle : Heroicon::MinusCircle;
+                    //         }
+                    //     })
+                    //     ->color(function ($record) {
+                    //         if($record->pointLog?->subject_type != 'App\Models\Student'){
+                    //             return Color::Violet;
+                    //         }
+                    //         else{
+                    //             return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
+                    //         }
+                    //     })
+                    //     ->grow(false)
+                    //     ->size('xl')
+                    //     ->extraAttributes(['class' => '!items-start [&_svg]:mt-1']),
 
                     Stack::make([
                         TextColumn::make('pointLog.subject_type')
@@ -187,12 +197,26 @@ class PointLogDetailsRelationManager extends RelationManager
                                     return Color::Violet;
                                 }
                             })
-                            ->size('xl')
+                            ->icon(function ($record) {
+                                // dd($record->conductRule?->category);
+                                if($record->pointLog?->subject_type != 'App\Models\Student'){
+                                    return Heroicon::UserCircle;
+                                }
+                                else{
+                                    return $record->conductRule?->category == 'Achievement' ? Heroicon::PlusCircle : Heroicon::MinusCircle;
+                                }
+                            })
+                            ->iconColor(function ($record){
+                                if($record->pointLog?->subject_type == 'App\Models\Student'){
+                                    return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
+                                }
+                                else{
+                                    return Color::Violet;
+                                }
+                            })
+                            ->size('2xl')
                             ->searchable()
-                            ->alignJustify()
-                            ->extraAttributes([
-                                'class' => '[&_.fi-badge-label]:text-base [&_.fi-badge-label]:font-bold [&_.fi-badge]:py-1.5 [&_.fi-badge]:px-3.5 [&_.fi-badge-icon]:h-5 [&_.fi-badge-icon]:w-5',
-                            ]),
+                            ->alignJustify(),
                                                
                         TextColumn::make('conductRule.conduct_name')
                             ->label('Aturan Poin')

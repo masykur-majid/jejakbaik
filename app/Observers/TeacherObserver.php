@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Teacher;
 use App\Models\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class TeacherObserver
 {
@@ -17,7 +17,7 @@ class TeacherObserver
             $user  = User::create([
                 'name' => $teacher->teacher_name,
                 'email'=> $teacher->email,
-                'password' => bcrypt('password123'), 
+                'password' => bcrypt('password123'),
             ]);
 
             $user->assignRole('teacher');

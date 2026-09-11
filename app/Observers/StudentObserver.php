@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Student;
 use App\Models\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class StudentObserver
 {
@@ -13,18 +13,18 @@ class StudentObserver
      */
     public function created(Student $student): void
     {
-        DB::transaction(function () use ($student){
-            $user  = User::create([
-                'name' => $student->student_name,
-                'email'=> $student->email,
-                'password' => bcrypt('password123'), 
-            ]);
+        // DB::transaction(function () use ($student){
+        //     $user  = User::create([
+        //         'name' => $student->student_name,
+        //         'email'=> $student->email,
+        //         'password' => bcrypt('password123'),
+        //     ]);
 
-            $user->assignRole('student');
+        //     $user->assignRole('student');
 
-            $student->user_id = $user->id;
-            $student->saveQuietly();
-        });
+        //     $student->user_id = $user->id;
+        //     $student->saveQuietly();
+        // });
     }
 
     /**
@@ -37,12 +37,12 @@ class StudentObserver
 
     public function updating(Student $student): void
     {
-        if($student->isDirty(['full_name', 'email'])){
-            $student->user->update([
-                'name' => $student->student_name,
-                'email' => $student->email
-            ]);
-        }
+        // if($student->isDirty(['full_name', 'email'])){
+        //     $student->user->update([
+        //         'name' => $student->student_name,
+        //         'email' => $student->email
+        //     ]);
+        // }
     }
 
     /**

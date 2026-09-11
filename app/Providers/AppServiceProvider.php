@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Teacher::observe(TeacherObserver::class);
-        Student::observe(StudentObserver::class);
+        // Student::observe(StudentObserver::class);
         ReadingLog::observe(ReadingLogObserver::class);
         PointLogDetail::observe(PointLogDetailObserver::class);
         PointLog::observe(PointLogObserver::class);

@@ -8,9 +8,11 @@ use App\Models\ConductRule;
 use App\Models\PointLogDetail;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Support\ImageUploadHelper;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -26,8 +28,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Filament\Support\Enums\MaxWidth;
+use Illuminate\Support\Str;
 use Override;
 
 class InputForWholeClass extends CreateRecord
@@ -35,6 +40,13 @@ class InputForWholeClass extends CreateRecord
     protected static string $resource = PointLogResource::class;
 
     protected static ?string $title = 'Input Poin Massal Per Kelas';
+
+
+    #[Override]
+    public function getMaxContentWidth(): Width|string|null
+    {
+        return '4xl';
+    }
 
     #[Override]
     protected function getFormActions(): array
@@ -68,16 +80,17 @@ class InputForWholeClass extends CreateRecord
 
                         Select::make('class_group_id')
                             ->label('Kelas')
-                            ->placeholder('Pilih Kelas')  
+                            ->required()
+                            ->placeholder('Pilih Kelas')
                             ->options(function(){
                                 if(!auth()->user()->hasRole('super_admin')){
-                                    $teacherId = Teacher::where('user_id', auth()->id())->value('id');    
+                                    $teacherId = Teacher::where('user_id', auth()->id())->value('id');
                                     return ClassGroup::query()->where('form_teacher', $teacherId)->pluck('class_name', 'id');
                                 }
                                 return ClassGroup::query()->pluck('class_name', 'id');
-                            })    
+                            })
                             ->live()
-                            ->dehydrated(true),  
+                            ->dehydrated(true),
 
                         Select::make('subject_id')
                             ->label('Aturan Poin yang Dikerjakan')
@@ -87,7 +100,7 @@ class InputForWholeClass extends CreateRecord
                             ->required()
                             ->columnSpan(3)
                             ->live()
-                            ->afterStateUpdated(function (string $state, Set $set, Get $get){
+                            ->afterStateUpdated(function (?string $state, Set $set, Get $get){
                                     $repeaterItems = $get('pointLogDetails') ?? [];
                                     if($state){
                                         $PointRule = ConductRule::find($state);
@@ -95,9 +108,10 @@ class InputForWholeClass extends CreateRecord
                                         $set('conduct_point', $PointRule ? $PointRule->conduct_point : 0);
                                         $set("counted_point", $PointRule->conduct_point*$occurrence);
                                     }
-                                    
+
                                     else{
                                         $set('conduct_point', 0);
+                                        $set('counted_point', 0);
                                     }
                             }),
 
@@ -105,7 +119,7 @@ class InputForWholeClass extends CreateRecord
                             ->label('Poin')
                             ->disabled()
                             ->dehydrated(),
-                        
+
                          TextInput::make('occurrence_number')
                                 ->label('Jumlah Kejadian')
                                 ->required()
@@ -115,7 +129,7 @@ class InputForWholeClass extends CreateRecord
                                 ->afterStateUpdated(function ($state, Get $get, Set $set){
                                     $occurrenceNumber = $state;
                                     $conductPoint = $get('conduct_point');
-                                    
+
                                     if($conductPoint && $occurrenceNumber){
                                         $set('counted_point', $occurrenceNumber*$conductPoint);
                                     }
@@ -131,17 +145,42 @@ class InputForWholeClass extends CreateRecord
                                 ->live()
                                 ->formatStateUsing(function ($state, Get $get, Set $set){
                                     $conductPoint = $get('conduct_point');
-                                    
+
                                     return $state ?? $conductPoint;
                                 })
                                 ->dehydrated(),
+
                             Textarea::make('action_notes')
                                 ->label('Keterangan')
                                 ->required()
-                                ->columnSpan(3),
+                                ->columnSpanFull(),
+
+                            FileUpload::make('evidence_photo')
+                                ->label('Foto Bukti')
+                                ->columnSpanFull()
+                                ->required()
+                                ->disk('r2')
+                                ->directory('uploads/images')
+                                ->image()
+                                ->saveUploadedFileUsing(function ($file, Get $get) {
+                                    $studentId = $get('../../subject_id');
+                                    $student = Student::with('classGroup')->find($studentId);
+                                    $classGroupSlug =   $student && $student->classGroup
+                                                        ? Str::slug($student->classGroup->class_name)
+                                                        : 'unknown-class';
+                                    $directory = "uploads/images/".strtoupper($classGroupSlug);
+                                    // dd($directory);
+                                    return ImageUploadHelper::convertAndStore(
+                                        file: $file,
+                                        directory: $directory,
+                                        disk: 'r2',
+                                        quality: 80,
+                                        maxWidth: 1200
+                                    );
+                                }),
                     ])
                     ->columns(3),
-                    
+
                     Actions::make([
                         // Tombol Simpan (Submit)
                         Action::make('save')
@@ -156,10 +195,7 @@ class InputForWholeClass extends CreateRecord
                             ->color('gray'),
                     ])
                 ])
-                ->columns(1)
-                ->extraAttributes([
-                    'class' => 'max-w-2xl mx-auto' // Membatasi lebar dan meletakkan di tengah
-                ]);;             
+                ->columns(1);
     }
 
     #[Override]
@@ -175,7 +211,7 @@ class InputForWholeClass extends CreateRecord
                     ->body('Kelas yang dipilih belum memiliki siswa')
                     ->danger()
                     ->send();
-                
+
                 // Melempar exception agar transaksi database dibatalkan dan form tidak tersimpan/redirect
                 throw new Exception('Kelas Kosong');
             }
