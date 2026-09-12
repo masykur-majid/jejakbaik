@@ -1,7 +1,9 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-
 @source '../../../../app/Filament/Parapoint/**/*';
 @source '../../../../resources/views/filament/parapoint/**/*';
+
+@source '../../../../app/Filament/Widgets/**/*';
+@source '../../../../resources/views/filament/widgets/**/*';
 
 
 .badge-xl-bold {

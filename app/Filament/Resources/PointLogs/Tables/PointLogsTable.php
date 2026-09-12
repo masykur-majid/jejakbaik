@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PointLogs\Tables;
 
 use App\Filament\Resources\PointLogs\PointLogResource;
+use App\Filament\Widgets\InputPointWidget;
 use App\Models\ConductRule;
 use App\Models\Student;
 use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
@@ -19,9 +20,11 @@ use Filament\Tables\Table;
 
 class PointLogsTable
 {
+
     public static function configure(Table $table): Table
     {
         return $table
+            ->heading('Catatan Input Poin')
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Tanggal')
@@ -30,15 +33,16 @@ class PointLogsTable
                     ->dateTime('d M Y'),
                 TextColumn::make('subject_type')
                     ->label('Input Berdasarkan')
+                    ->sortable()
                     ->searchable()
                     ->formatStateUsing(function (string $state) {
-                        $cleanState = class_basename($state); 
+                        $cleanState = class_basename($state);
                         $lowerState = strtolower($cleanState);
 
                         return match ($lowerState) {
                             'conductrule', 'conduct' => 'Conduct',
                             'student' => 'Student',
-                            default => $state, 
+                            default => $state,
                         };
                     })
                     ->badge()
@@ -80,27 +84,14 @@ class PointLogsTable
                 DeleteAction::make(),
                 // EditAction::make(),
             ])
+            ->headerActions([
+
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                Action::make('create_by_student')
-                    ->label('Input Berdasarkan Siswa')
-                    ->icon('tabler-user')
-                    ->color(Color::Indigo)
-                    ->url(PointLogResource::getUrl('create-by-student')),
 
-                Action::make('create_by_conduct')
-                    ->label('Input Berdasarkan Pelanggaran')
-                    ->icon('tabler-file-description')
-                    ->color(Color::Purple)
-                    ->url(PointLogResource::getUrl('create-by-conduct')),
-                
-                Action::make('mas_input')
-                    ->label('Input Poin Untuk Satu Kelas')
-                    ->icon('tabler-file-description')
-                    ->color(Color::Purple)
-                    ->url(PointLogResource::getUrl('mass-input')),
             ]);
     }
 }

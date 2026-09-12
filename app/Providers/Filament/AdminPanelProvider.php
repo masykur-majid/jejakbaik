@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
-                'primary' => Color::Teal,
+                'primary' => Color::Violet,
                 'Neutral' => Color::Neutral,
                 'Colour4' => Color::Zinc
             ])

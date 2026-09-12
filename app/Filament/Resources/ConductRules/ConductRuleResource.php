@@ -25,6 +25,8 @@ class ConductRuleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::Notebook;
 
+    protected static ?int $navigationSort = 3;
+
     // protected static string| UnitEnum |null $navigationGroup = 'ParaPoint';
 
     protected static ?string $navigationLabel = 'Aturan Poin';

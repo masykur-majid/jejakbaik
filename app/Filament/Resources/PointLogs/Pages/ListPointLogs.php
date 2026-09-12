@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PointLogs\Pages;
 
 use App\Filament\Resources\PointLogs\PointLogResource;
+use App\Filament\Widgets\InputPointWidget;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -14,28 +15,28 @@ class ListPointLogs extends ListRecords
 {
     protected static string $resource = PointLogResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getHeaderWidgets(): array
     {
         return [
-        //
+            InputPointWidget::class,
         ];
     }
 
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('All')
-                            ->label('Show All'),
-            
-            'Conduct' => Tab::make('Log By Conduct'),
-                        // ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Achievement'))
-                        // ->badge($this->getModel()::where('category', 'Achievement')->count())
-                        // ->icon(Heroicon::PlusCircle),
-            
-            'Student' => Tab::make('Log By Student') 
-                        // ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Violation'))
-                        // ->badge($this->getModel()::where('category', 'Violation')->count())
-                        // ->icon(Heroicon::MinusCircle),
+            // 'all' => Tab::make('All')
+            //                 ->label('Show All'),
+
+            // 'Conduct' => Tab::make('Log By Conduct'),
+            //             // ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Achievement'))
+            //             // ->badge($this->getModel()::where('category', 'Achievement')->count())
+            //             // ->icon(Heroicon::PlusCircle),
+
+            // 'Student' => Tab::make('Log By Student')
+            //             // ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'Violation'))
+            //             // ->badge($this->getModel()::where('category', 'Violation')->count())
+            //             // ->icon(Heroicon::MinusCircle),
         ];
     }
 }

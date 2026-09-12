@@ -29,12 +29,14 @@ class StudentPointResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::Stars;
 
     protected static string | BackedEnum | null $activeNavigationIcon = TablerIcon::StarsFilled;
-    
+
     protected static ?string $navigationLabel = 'Lihat Poin Siswa';
- 
+
     protected static ?string $pluralLabel = 'Daftar Poin Siswa';
- 
+
     protected static ?string $modelLabel = 'Student Point';
+
+    protected static ?int $navigationSort = 2;
 
     public static function getNavigationGroup(): ?string
     {
@@ -46,7 +48,7 @@ class StudentPointResource extends Resource
         // Return null (ungrouped) for any other panel
         return null;
     }
-    
+
     public static function form(Schema $schema): Schema
     {
         return StudentPointForm::configure($schema);
@@ -68,7 +70,7 @@ class StudentPointResource extends Resource
             PointLogDetailsRelationManager::class,
         ];
     }
-    
+
 
     #[Override]
     public static function getEloquentQuery(): Builder
@@ -107,6 +109,6 @@ class StudentPointResource extends Resource
     }
     #[On('refreshStudentPoint')]
     public function refreshStudentPoint(): void{
-        
+
     }
 }

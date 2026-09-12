@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Resources\ConductRules\ConductRuleResource;
 use App\Filament\Resources\PointLogs\PointLogResource;
 use App\Filament\Resources\StudentPoints\StudentPointResource;
+use App\Filament\Widgets\InputPointWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,7 +31,6 @@ class ParapointPanelProvider extends PanelProvider
             ->id('parapoint')
             ->path('parapoint')
             ->viteTheme('resources/css/filament/parapoint/theme.css')
-            
             ->maxContentWidth('full')
             ->profile()
             ->topNavigation()
@@ -44,13 +44,14 @@ class ParapointPanelProvider extends PanelProvider
                 StudentPointResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Parapoint/Pages'), for: 'App\Filament\Parapoint\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
+            // ->pages([
+            //     Dashboard::class,
+            // ])
             ->discoverWidgets(in: app_path('Filament/Parapoint/Widgets'), for: 'App\Filament\Parapoint\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+                InputPointWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
