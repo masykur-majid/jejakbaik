@@ -87,7 +87,7 @@ class PointLogDetailsRelationManager extends RelationManager
                     ->afterStateUpdated(function ($state, Get $get, Set $set){
                         $occurrenceNumber = $state;
                         $actionValue = $get('conduct_point');
-                        
+
                         if($actionValue && $occurrenceNumber){
                             $set('counted_point', $occurrenceNumber*$actionValue);
                         }
@@ -152,7 +152,7 @@ class PointLogDetailsRelationManager extends RelationManager
                             return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
                         })
                         ->getStateUsing(function ($record){
-                            return $record->counted_point > 0 ? '+'.$record->counted_point : '-'.$record->counted_point;
+                            return $record->counted_point > 0 ? '+'.$record->counted_point : $record->counted_point;
                         }),
 
                     // IconColumn::make('pointLog.subject_type')
@@ -217,7 +217,7 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->size('2xl')
                             ->searchable()
                             ->alignJustify(),
-                                               
+
                         TextColumn::make('conductRule.conduct_name')
                             ->label('Aturan Poin')
                             ->html()
@@ -236,8 +236,8 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->color(Color::Slate)
                             ->sortable(),
                     ])->space(0),
-                    
-                
+
+
                     TextColumn::make('conduct_point')
                         ->label('Poin')
                         ->grow(false)
@@ -270,7 +270,7 @@ class PointLogDetailsRelationManager extends RelationManager
                         ->extraHeaderAttributes(['class' => 'whitespace-normal']),
                 ])
                 ->extraAttributes(['class' => 'baris-log-rata-atas'])
-                
+
             ])
             ->filters([
                 //
