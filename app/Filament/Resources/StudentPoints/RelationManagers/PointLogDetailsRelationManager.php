@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\StudentPoints\RelationManagers;
 
 use App\Models\ConductRule;
+use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -178,45 +179,28 @@ class PointLogDetailsRelationManager extends RelationManager
                     //     ->extraAttributes(['class' => '!items-start [&_svg]:mt-1']),
 
                     Stack::make([
-                        TextColumn::make('pointLog.subject_type')
-                            ->label('Kategori')
-                            ->getStateUsing(function ($record){
-                                if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    return $record->conductRule?->category == 'Achievement' ? 'Prestasi' : 'Pelanggaran';
-                                }
-                                else{
-                                    return $record->student?->student_name;
-                                }
-                            })
-                            ->weight(FontWeight::Bold)
-                            ->color(function ($record){
-                                if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
-                                }
-                                else{
-                                    return Color::Violet;
-                                }
-                            })
-                            ->icon(function ($record) {
-                                // dd($record->conductRule?->category);
-                                if($record->pointLog?->subject_type != 'App\Models\Student'){
-                                    return Heroicon::UserCircle;
-                                }
-                                else{
-                                    return $record->conductRule?->category == 'Achievement' ? Heroicon::PlusCircle : Heroicon::MinusCircle;
-                                }
-                            })
-                            ->iconColor(function ($record){
-                                if($record->pointLog?->subject_type == 'App\Models\Student'){
-                                    return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
-                                }
-                                else{
-                                    return Color::Violet;
-                                }
-                            })
-                            ->size('2xl')
-                            ->searchable()
-                            ->alignJustify(),
+                    //     TextColumn::make('pointLog.subject_type')
+                    //         ->label('Kategori')
+                    //         ->getStateUsing(function ($record){
+                    //             if($record->pointLog?->subject_type == 'App\Models\Student'){
+                    //                 return $record->conductRule?->category == 'Achievement' ? 'Prestasi' : 'Pelanggaran';
+                    //             }
+                    //             else{
+                    //                 return $record->student?->student_name;
+                    //             }
+                    //         })
+                    //         ->weight(FontWeight::Bold)
+                    //         ->color(function ($record){
+                    //             if($record->pointLog?->subject_type == 'App\Models\Student'){
+                    //                 return $record->conductRule?->category == 'Achievement' ? Color::Green : Color::Red;
+                    //             }
+                    //             else{
+                    //                 return Color::Violet;
+                    //             }
+                    //         })
+                    //         ->size('2xl')
+                    //         ->searchable()
+                    //         ->alignJustify(),
 
                         TextColumn::make('conductRule.conduct_name')
                             ->label('Aturan Poin')
@@ -225,38 +209,38 @@ class PointLogDetailsRelationManager extends RelationManager
                             ->searchable()
                             ->grow(true)
                             ->wrap()
-                            ->size('xs')
-                            ->color(Color::Mauve),
+                            ->size('sm')
+                            ->weight('semibold')
+                            ->color(function ($record){
+                                return $record->conductRule?->category === 'Achievement' ? Color::Green : Color::Rose;
+                            }),
 
-                        TextColumn::make('occurrence_date')
-                            ->label('Tanggal')
-                            ->date()
-                            ->grow(false)
-                            ->size('xs')
-                            ->color(Color::Slate)
-                            ->sortable(),
+                        TextColumn::make('date_and_reporter')
+                            ->formatStateUsing(function ($record){
+                                return $record->occurence_date;
+                            }),
                     ])->space(0),
 
 
-                    TextColumn::make('conduct_point')
-                        ->label('Poin')
-                        ->grow(false)
-                        ->formatStateUsing(function ($record){
-                            $point = $record->conduct_point ?? 0;
-                            $occur = $record->occurrence_number ?? 0;
-                            return "{$point} x {$occur} = ";
-                        })
-                        ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+                    // TextColumn::make('conduct_point')
+                    //     ->label('Poin')
+                    //     ->grow(false)
+                    //     ->formatStateUsing(function ($record){
+                    //         $point = $record->conduct_point ?? 0;
+                    //         $occur = $record->occurrence_number ?? 0;
+                    //         return "{$point} x {$occur} = ";
+                    //     })
+                    //     ->extraHeaderAttributes(['class' => 'whitespace-normal']),
 
-                    TextColumn::make('counted_point')
-                        ->label('Total')
-                        ->grow(false)
-                        ->badge()
-                        ->numeric()
-                        ->width('60px')
-                        ->wrap()
-                        ->sortable()
-                        ->extraHeaderAttributes(['class' => 'whitespace-normal']),
+                    // TextColumn::make('counted_point')
+                    //     ->label('Total')
+                    //     ->grow(false)
+                    //     ->badge()
+                    //     ->numeric()
+                    //     ->width('60px')
+                    //     ->wrap()
+                    //     ->sortable()
+                    //     ->extraHeaderAttributes(['class' => 'whitespace-normal']),
 
                     TextColumn::make('pointLog.teacher.teacher_name')
                         ->label('Guru Pencatat')
@@ -306,6 +290,7 @@ class PointLogDetailsRelationManager extends RelationManager
                         DeleteAction::make()
                             ->label('Hapus'),
                 ])
+                ->icon(TablerIcon::DotsVertical)
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
