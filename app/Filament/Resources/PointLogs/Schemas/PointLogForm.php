@@ -39,18 +39,25 @@ class PointLogForm
                         Select::make('subject_id')
                             ->label('Nama Siswa')
                             ->options( function (){
-                                if(auth()->user()->hasRole('super_admin')){
-                                    return Student::pluck('student_name', 'id');
+                                $user = auth()->user();
+                                $query = Student::with('classGroup');
+
+
+                                if(!$user->hasAnyRole(['super_admin', 'operator'])){
+                                    $teacher = Teacher::where('user_id', $user->id)->with('classgroups')->first();
+
+                                    if(!$teacher || $teacher->classgroups->isEmpty()){
+                                        return [];
+                                    }
+
+                                    $classGroupIds =$teacher->classgroups->pluck('id')->toArray();
+                                    $query->whereIn('class_group_id', $classGroupIds);
                                 }
 
-                                $teacher = Teacher::where('user_id', auth()->id())->with('classgroups')->first();
-
-                                if($teacher && $teacher->classgroups){
-                                    $classGroupIds = $teacher->classgroups->pluck('id')->toArray();
-                                    return Student::whereIn('class_group_id', $classGroupIds)
-                                                        ->pluck('student_name', 'id');
-                                }
-                                return [];
+                                return $query->get()->mapWithKeys(function ($student) {
+                                    $className = $student->classGroup->class_name ?? '[no-class]';
+                                    return [$student->id => "{$className} – ({$student->nisn}) {$student->student_name}"];
+                                });
                             })
                             ->preload()
                             ->searchable()
