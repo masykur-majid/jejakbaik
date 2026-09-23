@@ -23,8 +23,7 @@ class StudentImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
             ImportColumn::make('email')
-                ->requiredMapping()
-                ->rules([ 'email', 'max:255']),
+                ->rules(['email', 'max:255']),
             ImportColumn::make('current_grade')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
