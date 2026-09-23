@@ -27,13 +27,12 @@ class StudentForm
                     ->required(),
                 TextInput::make('email')
                     ->email()
-                    ->required()
                     ->unique(ignoreRecord: true)
                     ->live()
                     ->afterStateUpdated(function ($state, $livewire, $component) {
                         // Logic to check if email exists manually
                         $exists = User::where('email', $state)->exists();
-                        
+
                         if ($exists) {
                             // Force validation if you want to show a standard error message
                             $livewire->validateOnly($component->getStatePath());
