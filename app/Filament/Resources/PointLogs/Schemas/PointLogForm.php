@@ -260,13 +260,16 @@ class PointLogForm
                                 ->label('Kelas')
                                 ->placeholder('Pilih Kelas')
                                 ->options(function(){
-                                    if(!auth()->user()->hasAnyRole(['super_admin', 'operator'])){
+                                    if(auth()->user()->hasAnyRole(['super_admin', 'operator'])){
+                                        return ClassGroup::query()->pluck('class_name', 'id');
+                                    }else{
                                         $teacherId = Teacher::where('user_id', auth()->id())->value('id');
                                         return ClassGroup::query()->where('form_teacher', $teacherId)->pluck('class_name', 'id');
                                     }
-                                    return ClassGroup::query()->pluck('class_name', 'id');
                                 })
                                 ->live()
+                                ->preload()
+                                ->searchable()
                                 ->dehydrated(false)
                                 ->columnSpan(1),
 
