@@ -201,7 +201,13 @@ class PointLogForm
                         Select::make('teacher_id')
                             ->label('Guru Pencatat')
                             ->columnSpan(2)
-                            ->relationship('teacher', 'teacher_name')
+                            ->relationship('teacher', 'teacher_name', function (Builder $query){
+                                if(!auth()->user()->hasRole('super_admin')){
+                                    return $query->where('user_id', auth()->id());
+                                }
+                                return $query;
+                            })
+                            ->default(!auth()->user()->hasRole('super_admin') ? Teacher::where('user_id', auth()->id())->value('id') : null)
                             ->preload()
                             ->searchable()
                             ->required(),
@@ -254,7 +260,7 @@ class PointLogForm
                                 ->label('Kelas')
                                 ->placeholder('Pilih Kelas')
                                 ->options(function(){
-                                    if(!auth()->user()->hasRole('super_admin')){
+                                    if(!auth()->user()->hasAnyRole(['super_admin', 'operator'])){
                                         $teacherId = Teacher::where('user_id', auth()->id())->value('id');
                                         return ClassGroup::query()->where('form_teacher', $teacherId)->pluck('class_name', 'id');
                                     }
