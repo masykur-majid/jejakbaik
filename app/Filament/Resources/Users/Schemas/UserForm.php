@@ -21,6 +21,7 @@ class UserForm
                     ->required(),
                 TextInput::make('password')
                     ->password()
+                    ->revealable()
                     ->required(),
                 Select::make('roles')
                     ->relationship('roles', 'name')

@@ -68,15 +68,15 @@ class ClassGroupsTable
                     ->tooltip('Edit This Class')
                     ->icon(Heroicon::PencilSquare)
                     ->iconSize('lg'),
-                
+
                 Action::make('Manage_members')
                     ->hiddenLabel()
                     ->tooltip('Manage Members')
                     ->icon(TablerIcon::ReplaceUser)
                     ->iconSize('lg')
                     ->color('info')
-                   ->url(fn ($record): string => ClassGroupResource::getUrl('manage',['record'=>$record]))
-                   ->hidden(fn () => Auth::user()->hasRole('guru')),
+                    ->url(fn ($record): string => ClassGroupResource::getUrl('manage',['record'=>$record]))
+                    ->hidden(fn () => Auth::user()->hasRole('guru')),
                 DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete This Class')
